@@ -88,6 +88,7 @@ public class AdminController {
 				request.setAttribute("msg", "用户名或密码错误！");
 			}
 		}
+		
 		return new ModelAndView("admin/login");
 	}
 	
