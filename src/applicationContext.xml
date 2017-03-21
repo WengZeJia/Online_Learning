@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context"
+xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="   
+         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd   
+   http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd   
+   http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd   
+   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+
+	<!-- 扫描annotation类，过滤Service，Repository -->
+	<context:component-scan base-package="ol">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+	</context:component-scan>
+
+	<!--加载dataSource属性文件 -->
+	<context:property-placeholder location="classpath:/config.properties" />
+	<!-- 数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${dataSource.driverClassName}" />
+		<property name="url" value="${dataSource.url}" />
+		<property name="username" value="${dataSource.username}" />
+		<property name="password" value="${dataSource.password}" />
+		<property name="maxActive">
+			<value>300</value>
+		</property>
+		<property name="maxIdle">
+			<value>3000</value>
+		</property>
+		<property name="maxWait">
+			<value>12000</value>
+		</property>
+	</bean>
+	
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan" value="ol.entity*"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.jdbc.batch_size">20</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- 不破坏数据库,注册SessionFactory 
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="transactionInterceptor" class="org.springframework.transaction.interceptor.TransactionInterceptor">
+		<property name="transactionManager" ref="transactionManager"></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED</prop>
+				<prop key="find*">PROPAGATION_REQUIRED</prop>
+				<prop key="get*">PROPAGATION_REQUIRED</prop>
+				<prop key="execute*">PROPAGATION_REQUIRED</prop>
+				<prop key="load*">PROPAGATION_REQUIRED</prop>
+				<prop key="merge*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+			</props>
+		</property>
+	</bean>
+	<bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+		<property name="beanNames">
+			<list>
+				<value>*Service</value>
+			</list>
+		</property>
+		<property name="interceptorNames">
+			<list>
+				<value>transactionInterceptor</value>
+			</list>
+		</property>
+	</bean>-->
+	
+	<!-- 启用注解事务驱动,在需要的服务类或服务方法处直接打上@Transactional注解 -->
+	 <bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	 </bean>
+	 <tx:annotation-driven transaction-manager="transactionManager" />
+	 <tx:annotation-driven mode="aspectj" />
+	 <!-- 基于@AspectJ切面的驱动器 -->
+	 <aop:aspectj-autoproxy />
+	 <!-- 支持 @Transactional 标记 <tx:annotation-driven mode="aspectj" /> -->
+	 <!-- 支持 @AspectJ 标记 <aop:aspectj-autoproxy proxy-target-class="true"/> -->
+	 <!-- 以AspectJ方式 定义 AOP -->
+	 <aop:config>
+	  <aop:advisor pointcut="execution(* ol..*Dao.*(..))" advice-ref="txAdvice" />
+	  <aop:advisor pointcut="execution(* ol.*impl..*.*(..))" advice-ref="txAdvice" />
+	  <aop:advisor pointcut="execution(* ol..*Impl.*(..))" advice-ref="txAdvice" />
+	  <aop:advisor pointcut="execution(* ol.dao..*(..))" advice-ref="txAdvice" />
+	  <!-- <aop:advisor pointcut="execution(* com.travelsky.cshldet.mobile.service.*impl..*.*(..))" advice-ref="txAdvice" /> -->
+	 </aop:config>
+	 <!-- 基本事务定义,使用transactionManager作事务管理,默认get*方法的事务为readonly,其余方法按默认设置. -->
+	 <tx:advice id="txAdvice">
+	  <tx:attributes>
+	   <tx:method name="save*" propagation="REQUIRED" />
+	   <tx:method name="del*" propagation="REQUIRED" />
+	   <tx:method name="update*" propagation="REQUIRED"/>
+	   <tx:method name="add*" propagation="REQUIRED" />
+	   <tx:method name="get*" read-only="true" />
+	   <tx:method name="find*" read-only="true" />
+	   <tx:method name="*" rollback-for="Exception" />
+	  </tx:attributes>
+	 </tx:advice>
+	
+</beans>

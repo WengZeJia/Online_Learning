@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/mvc 
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd"
+    default-lazy-init="true">
+    <context:annotation-config />
+    <!--使Spring支持自动检测组件，如注解的Controller -->
+    <context:component-scan base-package="ol.controller"/>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+          p:prefix="/WEB-INF/jsp/"
+          p:suffix=".jsp"/>
+    
+    <!-- 国际化配置 -->
+    <!-- 存储区域设置信息 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+    <!-- 国际化资源文件 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="classpath:lang/messages" />
+    </bean>
+    <mvc:interceptors>
+        <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+            <property name="paramName" value="lang" />
+        </bean>
+    </mvc:interceptors>
+    <!-- 国际化配置END -->
+    
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" />
+    <!-- 启动 Spring MVC 的注解功能，完成请求和注解 POJO 的映射 -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter"></bean>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 支持上传文件 -->  
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+        <property name="defaultEncoding" value="utf-8"></property>   
+        <property name="maxUploadSize" value="10485760000"></property>  
+        <property name="maxInMemorySize" value="40960"></property>  
+   </bean>
+</beans>

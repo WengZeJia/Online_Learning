@@ -1,0 +1,116 @@
+body,html,h1,h2,h3,h4,p,ul{
+	margin: 0;
+	padding: 0;
+}
+ul{
+	list-style: none;
+}
+.top{
+	width: 960px;
+	background-image: url("../images/top.png");
+	height: 99px;
+	background-repeat: no-repeat;
+	background-position: center;
+	margin: 0 auto;
+}
+.nav{
+	width: 960px;
+	margin: 0 auto;
+	height: 35px;
+}
+.nav .menu{
+	float: left;
+	width: 20%;
+	text-align: center;
+	line-height: 35px;
+	border-right: 1px solid #ccc;
+	background-image: url("../images/menu-gb.png");
+	background-repeat: repeat-x;
+}
+.nav .last{
+	border-right: none;	
+	width: 19.5%;
+}
+.nav .menu:HOVER{
+	color: #fff;
+	background-image: url("../images/menu-gb-on.png");
+	background-repeat: repeat-x;
+}
+.nav .menu a{
+	display: inline-block;
+	text-decoration: none;
+	width: 100%;
+	color: #fff;
+}
+.main-content{
+	width: 960px;
+	position: relative;
+	margin: 0 auto;
+	padding-top: 10px;
+	min-height: 300px;
+}
+.notice-list{
+	width: 70%;
+	float: left;
+	border: 1px solid #0d6088;
+	padding: 10px 20px;
+}
+.notice-list .notice{
+	padding: 4px 0;
+	cursor: pointer;
+}
+.notice-list .notice:HOVER{
+	color: #0d6088;
+}
+.notice-list .notice .title{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 550px;
+}
+.notice-more .notice .title{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+    color: #0d6088;
+    font-weight: bold;
+}
+.notice-more .notice .content{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 370px;
+}
+.notice-list .notice span{
+	display: inline-block;
+}
+.notice-list .notice .publish-date{
+	float: right;
+}
+.login-form{
+	width: 20%;
+	float: right;
+	border: 1px solid #0d6088;
+	padding: 10px 20px;
+}
+.login-form .text-input{
+	width: 140px;
+}
+.login-form td{
+	padding: 5px 0;
+}
+.footer{
+	clear: both;
+	color: #999;
+	font-size: 14px;
+	width: 960px;
+	padding: 10px;
+	margin: 20px auto;
+	text-align: center;
+	border-top: 1px solid #ccc;
+}
+a{
+	text-decoration: none;
+	color: #333;
+}
