@@ -20,8 +20,6 @@ import javax.persistence.Table;
 @Table(name = "user", catalog = "contribute")
 public class User implements java.io.Serializable {
 
-	// Fields
-
 	/**
 	 * 
 	 */
@@ -32,7 +30,8 @@ public class User implements java.io.Serializable {
 	private String realName;
 	private Timestamp lastLogin;
 	private Integer role;	
-	private List<Contributions> contributionses = new ArrayList<Contributions>();
+	private List<Courese> coureses = new ArrayList<Courese>();
+	private List<Enroll> enrolls = new ArrayList<Enroll>();
 
 	// Constructors
 
@@ -78,14 +77,23 @@ public class User implements java.io.Serializable {
 	public void setLastLogin(Timestamp lastLogin) {
 		this.lastLogin = lastLogin;
 	}
-
+	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-	public List<Contributions> getContributionses() {
-		return this.contributionses;
+	public List<Courese> getCoureses() {
+		return coureses;
 	}
 
-	public void setContributionses(List<Contributions> contributionses) {
-		this.contributionses = contributionses;
+	public void setCoureses(List<Courese> coureses) {
+		this.coureses = coureses;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	public List<Enroll> getEnrolls() {
+		return enrolls;
+	}
+
+	public void setEnrolls(List<Enroll> enrolls) {
+		this.enrolls = enrolls;
 	}
 
 	@Column(name = "pwd", length = 45)

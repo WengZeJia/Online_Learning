@@ -1,7 +1,8 @@
 package ol.entity;
 
 public class LeanQueryModel {
-	private String keyword; /* 关键词 */
+	private String keyword; /* 关键词 */ 
+	private String type; /* 科目 */ 
 	
 	 /**当前页码 */
 	private int currentpage;
@@ -50,6 +51,14 @@ public class LeanQueryModel {
 
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	
