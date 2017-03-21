@@ -63,6 +63,7 @@ public class UserController {
 		ModelAndView mav = new ModelAndView("login");
 		try {
 			userDao.saveUser(user);
+			
 			mav.addObject("msg", "注册成功，请登录！");
 		} catch (Exception e) {
 			e.printStackTrace();
