@@ -23,15 +23,16 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 		
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public Enroll findEnroll(int eId) {
-	    return this.getHibernateTemplate().get(Enroll.class, eId);
+	public List<Enroll> findEnroll(int eId,int userId) {
+	    return  this.getHibernateTemplate().find("from Enroll AS e where e.courese.coureseId = ? and e.user.userId=?", eId, userId);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Enroll> findUsersEnroll(int uid, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getHibernateTemplate().find("from Enroll AS e where e.user.userId = ?",uid);
 	}
 
 	@Override
@@ -49,6 +50,12 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 	@Override
 	public Integer findCoureseEnrollCount(int pid) {
 		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Enroll> userEnroll(int uid) {
+		return this.getHibernateTemplate().find("from Enroll AS e where e.user.userId = ?",uid);
 	}
 
 

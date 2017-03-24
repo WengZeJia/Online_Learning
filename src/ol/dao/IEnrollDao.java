@@ -11,7 +11,7 @@ public interface IEnrollDao {
 	
 	void updateEnroll(Enroll e);
 	
-	Enroll findEnroll(int eId);
+	List<Enroll> findEnroll(int eId,int useId);
 	
 	/**
 	 * 分页查找用户的报名记录
@@ -21,6 +21,14 @@ public interface IEnrollDao {
 	 * @return
 	 */
 	List<Enroll> findUsersEnroll(int uid, int start, int end);
+	/**
+	 * 分页查找用户的报名记录
+	 * @param uid
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	List<Enroll> userEnroll(int uid);
 	
 	/**
 	 * 某个用户的所有投稿总记录数

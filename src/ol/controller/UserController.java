@@ -79,7 +79,7 @@ public class UserController {
 	
 	@RequestMapping("logout.do")
 	public ModelAndView logout(HttpSession session){
-		session.removeAttribute("currUser");
+		session.removeAttribute("user");
 		return index();
 	}
 	
@@ -89,7 +89,7 @@ public class UserController {
 		if(user != null){
 			user.setLastLogin(new Timestamp(System.currentTimeMillis()));
 			userDao.updateUser(user);
-			session.setAttribute("currUser", user);
+			session.setAttribute("user", user);
 			return new ModelAndView("redirect:index.do");
 		}else{
 			ModelAndView mav = new ModelAndView("login");
@@ -124,36 +124,53 @@ public class UserController {
 		page.setTotalrecord(coureseDao.findCount(condition));
 		return new ModelAndView("index").addObject("page", page);
 	}
-	
+	//报名记录
+	@RequestMapping("record.do")
+	public ModelAndView searchEnroll(HttpServletRequest request,LeanQueryModel condition){
+		User user = (User) request.getSession().getAttribute("user");
+		int currentpage = Integer.parseInt(request.getParameter("currentpage"));
+		int pageNo =  request.getParameter("pageNo") ==null?1:Integer.parseInt(request.getParameter("pageNo"));
+		PageView<Enroll> page = new PageView<Enroll>(4,pageNo);
+		if(user != null){
+			condition.setFirstResult(page.getFirstResult());
+			condition.setMaxResutl(page.getMaxresult());
+			List<Enroll> list = enrollDao.findCoureseEnroll(user.getUserId(), (currentpage-1)*page.getMaxresult(), page.getMaxresult());
+			page.setRecords(list);
+			return new ModelAndView("profile").addObject("page", page);
+		}else{
+			return new ModelAndView("redirect:login.do");
+		}
+	}
 	/**
 	 * 新增报名记录
 	 */
 	@RequestMapping(value="save.do")
 	public void save(HttpServletRequest request,HttpSession session, PrintWriter pw) throws Exception {
-		User user = (User) request.getSession().getAttribute("currUser");
+		User user = (User) request.getSession().getAttribute("user");
 		Map<String, Object> rs =new HashMap<String, Object>();
 		if(user != null){
 			try{
 				int pId = Integer.parseInt(request.getParameter("pid"));
 				Courese cs = coureseDao.findCourese(pId);
-				Enroll els = enrollDao.findEnroll(pId);
-				if(els.getUser().getUserId()!= null && !els.getUser().getUserId().equals(cs.getUser().getUserId())){
-					rs.put("result", "02");
-					rs.put("msg2", "你已报名，请勿重复报名！");
-				}else {
+				List<Enroll> els = enrollDao.findEnroll(pId, user.getUserId());
+				if(els == null || els.isEmpty()){
 					Enroll el = new Enroll();
 					el.seteTime(new Date());
 					el.setCourese(cs);
 					el.setStatus(1);
-					el.setUser((User)session.getAttribute("currUser"));
+					el.setUser((User)session.getAttribute("user"));
 					enrollDao.saveEnroll(el);
 					rs.put("result", "00");
 					rs.put("msg","报名成功！");
+				}else {
+					rs.put("result", "02");
+					rs.put("msg2", "你已报名，请勿重复报名！");
 				}
 				
      		} catch(Exception e){ 
-				rs.put("result", "03");
-				rs.put("msg", "系统繁忙");
+				/*rs.put("result", "03");
+				rs.put("msg", "系统繁忙");*/
+     			throw new RuntimeException(e);
 			}
 		}else{
 			rs.put("result", "01");

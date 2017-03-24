@@ -10,8 +10,7 @@
 		<td class="price">${item.startTime }</td>
 		<td class="price">${item.releaseTime }</td>
 		<td class="price">${item.type }</td>
-		<td><a href="javascript:void(0);" onclick="enrol2()" class="reserve">详情</a>&nbsp;<a
-			href="javascript:void(0);" onclick="enrol('${item.coureseId}')" class="reserve">报名</a></td>
+		<td><a href="javascript:void(0);" onclick="enrol('${item.coureseId}')" class="reserve">报名</a></td>
 	</tr>
 </c:forEach>
 <tr>

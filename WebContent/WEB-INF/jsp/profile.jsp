@@ -22,13 +22,13 @@
 			<ul>
 				<li><a>&nbsp;</a></li>
 				<li><a href="index.do">首页</a></li>
-				<li class="active"><a href="profile.do">个人中心</a></li>
+				<li class="active"><a href="record.do">个人中心</a></li>
 				<li id="userInfo">
-					<c:if test="${sessionScope.currUser ne null}">
-						<a href="#" class="username">${sessionScope.currUser.realName}</a>
+					<c:if test="${sessionScope.user ne null}">
+						<a href="#" class="username">${sessionScope.user.realName}</a>
 						<a href="logout.do" class="logout">登出</a>
 					</c:if>
-					<c:if test="${sessionScope.currUser eq null}">
+					<c:if test="${sessionScope.user eq null}">
 						<a href="login.do">登录&nbsp;</a><!-- <a href="toRegist.do">注册</a> -->
 					</c:if>
 				</li>
@@ -38,42 +38,72 @@
 </header>
 
 <div id="container">
-	<!-- <aside class="sidebar">
-		<div class="sidebox hot">
-			<h2>热门刊物</h2>
-			<div class="figure" id="hotPeriod">
-				
-			</div>
-		</div>
-	</aside> -->
 	<div class="list ticket">
 		<form action="loginForm.do" method="post">
-			<h2>投稿记录&nbsp;&nbsp;${msg }</h2>
+			<h2>报名课程&nbsp;&nbsp;${msg }</h2>
 			<table>
 				<tr>
-					<td>序号</td>
-					<td>投稿日期</td>
-					<td>刊物</td>
-					<td>栏目</td>
-					<td>状态</td>
+					<th>用户</th>
+					<th>课程</th>
+					<th>报名时间</th>
+					<th>操作</th>
 				</tr>
-				<c:forEach items="${page.records }" var="item" varStatus="row">
+				<c:forEach items="${page.records }" var="item">
 					<tr>
-						<td>${row.count }</td>
-						<td><fmt:formatDate value="${item.publishTime }" type="date" pattern="yyyy-MM-dd"/></td>
-						<td>${item.solicitContributions.periodical.periodicalName }</td>
-						<td>${item.solicitContributions.columnType }</td>
-						<td>
-							<c:choose>
-								<c:when test="${item.status == 0}">待审</c:when>
-								<c:when test="${item.status == 1}">已采用</c:when>
-								<c:when test="${item.status == -1}">退稿</c:when>
-							</c:choose>
-						</td>
+						<td><a href="javascript:void(0);">${item.user.realName }</a></td>
+						<td class="price">${item.courese.cName }</td>
+						<td class="price">${item.eTime }</td>
+						<td><a href="javascript:void(0);" onclick="" class="reserve">进入学堂</a></td>
 					</tr>
 				</c:forEach>
+				<tr>
+	<td colspan="7">
+		<div class="pagelist">
+			<c:choose>
+				<%-- 如果总页数不足10页，那么把所有的页数都显示出来！ --%>
+				<c:when test="${page.totalpage <= page.maxresult }">
+					<c:set var="begin" value="1" />
+					<c:set var="end" value="${page.totalpage }" />
+				</c:when>
+				<c:otherwise>
+					<%-- 当总页数>10时，通过公式计算出begin和end --%>
+					<c:set var="begin" value="${page.currentpage-5 }" />
+					<c:set var="end" value="${page.currentpage+4 }" />
+					<%-- 头溢出 --%>
+					<c:if test="${begin < 1 }">
+						<c:set var="begin" value="1" />
+						<c:set var="end" value="${page.maxresult }" />
+					</c:if>
+					<%-- 尾溢出 --%>
+					<c:if test="${end > page.totalpage }">
+						<c:set var="begin" value="${page.totalpage - 9 }" />
+						<c:set var="end" value="${page.totalpage }" />
+					</c:if>
+				</c:otherwise>
+			</c:choose>
+			<%-- 循环遍历页码列表 --%>
+			<a href="" onclick="jumpTo('${page.currentpage-1}');return false">上一页</a>
+			<c:forEach var="i" begin="${begin }" end="${end }">
+				<c:choose>
+					<c:when test="${i eq page.currentpage }">
+						<span class="current">${i }</span>
+					</c:when>
+					<c:otherwise>
+						<a href="" onclick="jumpTo('${i }');return false">${i }</a>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+			<c:if test="${end < page.totalpage}">....</c:if>
+			<a href="" onclick="jumpTo('${page.currentpage+1}');return false">下一页</a>
+			<a href="" onclick="jumpTo('${page.totalpage}');return false">尾页</a>
+		</div>
+	</td>
+</tr>
+				
 			</table>
-			<div class="pageinfo">
+			<input type="hidden" id="totalPage" value="${page.totalpage}">
+			<input class="currentpage" name="currentpage" type="hidden" value="1">
+			<%-- <div class="pageinfo">
 				<ul>
 					<c:choose>
 						<c:when test="${page.currentpage==1}"></c:when>
@@ -86,7 +116,7 @@
 						<c:otherwise></c:otherwise>
 					</c:choose>
 				</ul>
-			</div>	
+			</div>	 --%>
 			<div class="form button">
 				
 			</div>
