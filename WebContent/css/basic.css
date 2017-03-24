@@ -5,6 +5,9 @@ body,h1,h2,h3,ul,ol,p,figure {
 	padding: 0;
 }
 body {
+	position: relative;   /*重要！保证footer是相对于wapper位置绝对*/  
+    height: auto;          /* 保证页面能撑开浏览器高度时显示正常*/  
+    min-height: 100% ; /* IE6不支持，IE6要单独配置*/
 	background-color: #fff;
 	font-family: "Helvetica Neue",Helvetica,Arial,"Microsoft Yahei UI","Microsoft YaHei",SimHei,"宋体",simsun,sans-serif;
 }

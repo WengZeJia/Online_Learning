@@ -282,9 +282,11 @@
 	color: #666;
 }
 #container .ticket, #container .scenery, #container .about {
+	text-align: center;
+    margin-left: 150px;
 	color: #666;
 	font-size: 20px;
-	height: 447px;
+	min-height: 447px;
 }
 #container .ticket h2, #container .scenery h2, #container .about h2 {
 	height: 40px;
@@ -318,7 +320,7 @@
 }
 #container .ticket .submit {
 	top: 80px;
-    right: 325px;
+    right: 395px;
 	display: inline-block;
 	width: 150px;
 	height: 45px;
@@ -432,3 +434,21 @@
 	margin: 20px 0;
 	font-style: normal;
 }
+.search{
+		    padding-left: 600px;
+    		padding-top: 20px;
+    		}
+    	.search_chinese{
+    		   border-radius: 6px;
+   			   background: #0ae;
+    		   padding: 2px 15px;
+               font-size: 16px;
+               padding-top: 6px;
+               color: #fff;
+    			}
+    	.input_search{
+    		    padding: 14px 0px;
+    			border-radius: 6px;
+    			border: 1px solid #CCC;
+    			height: 20px;
+    			}
