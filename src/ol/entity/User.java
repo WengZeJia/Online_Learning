@@ -25,13 +25,13 @@ public class User implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -2453844592798298620L;
 	private Integer userId;
-	private String userName;
+	private String userName;//登录名
 	private String pwd;
-	private String realName;
-	private Timestamp lastLogin;
-	private Integer role;	
-	private List<Courese> coureses = new ArrayList<Courese>();
-	private List<Enroll> enrolls = new ArrayList<Enroll>();
+	private String realName;//姓名
+	private Timestamp lastLogin;//最后登录时间
+	private Integer role;//角色 0学生 1老师
+	private List<Courese> coureses = new ArrayList<Courese>();//老师发布的课程
+	private List<Enroll> enrolls = new ArrayList<Enroll>();//学生课程报名
 
 	// Constructors
 

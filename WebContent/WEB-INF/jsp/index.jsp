@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<c:set var="path" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
@@ -11,26 +12,10 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/pintuer.css">
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
 	<style type="text/css">
-		.search{
-		    padding-left: 600px;
-    		padding-top: 20px;
-    		}
-    	.search_chinese{
-    		   border-radius: 6px;
-   			   background: #0ae;
-    		   padding: 2px 15px;
-               font-size: 16px;
-               padding-top: 6px;
-               color: #fff;
-    			}
-    	.input_search{
-    		    padding: 14px 0px;
-    			border-radius: 6px;
-    			border: 1px solid #CCC;
-    			height: 20px;
-    			}
+		 .invalid {background: #BBB;}
+		 .invalid:hover {background-color: #BBB;}
 	</style>
 </head>
 <body>
@@ -73,27 +58,34 @@
 			<h2>课程展示</h2>
 				<div class="search">
 					<input type="text" id="keyword" name="keyword" class="input_search" value="${key}"/>
-					<a href="javascript:void(0);" onclick="searchPosition();" class="btn searchBtn search_chinese"><i class="icon icon-search "></i>搜索</a>
+					<input id="pageNo" name="pageNo" type="hidden" value="1" />
+					<input type="hidden" id="pid" value="${pid}">
+					<input class="curr-page" type="hidden" value="${page.currentpage }">
+					<input class="total-page" type="hidden" value="${page.totalpage }">
+					<a href="javascript:void(0);" onclick="jumpTo(1);" class="btn searchBtn search_chinese"><i class="icon icon-search "></i>搜索</a>
 				</div>
 			<table>
 				<thead>
 					<tr>
-						<th>刊物</th>
-						<th>专栏</th>
-						<th>稿费</th>
+						<th>课程</th>
+						<!-- <th>描述</th> -->
+						<th>开课时间</th>
+						<th>结课时间</th>
+						<th>科目类型</th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody id="scList">
-					
+				
 				</tbody>
-				<tfoot>
+				<%-- <tfoot>
+					
 					<tr>
-						<td colspan="7" id="loadBtn">
-							<a href="javascript:void(0);" class="more" onclick="loadMore();">加载更多课程信息...</a>
+						<td colspan="7">
+							<%@include file="./Page.jsp" %>
 						</td>
 					</tr>
-				</tfoot>
+				</tfoot> --%>
 			</table>
 		</div>
 	</div>
@@ -103,26 +95,34 @@
 	<div class="bottom">Copyright © 在线学习平台| 粤ICP 备120110119 号| 经营许可证：L-YC-BK12345</div>
 </footer>
 <script type="text/javascript">
-	function loadMore(){
-		var currPage = parseInt($(".curr-page:last").val());
-		var totalPage = parseInt($(".total-page:last").val());
-		if(currPage == totalPage){
-			$("#loadBtn").html("<a class='more'>已全部加载</a>");
-			return ;
+//申请
+function enrol(pid){
+	var param = {pid: pid};
+	$.ajax({
+		type: "POST",
+		async: false,
+		url : 'save.do',
+		data : param,
+		dataType: "json"
+	}).done(function(data){
+		if(data.result == '00'){
+			/* $(".reserve").removeAttr("onclick");
+			$(".reserve").addClass("invalid");
+			$(".reserve").removeClass("a:hover");
+			$(".reserve").text("已报名"); */
+			alert("你已成功报名！");
 		}
-		var nextPage = parseInt($(".curr-page:last").val())+1;
-		$.get("loadSolicitContributions.do",{"keyword":$("#keyword").val(),"currentpage":nextPage}, function(data){
-			$("#scList").append(data);
-		});
-		
-	}
-	/* function searchPosition(){
-		var param = {"keyword":$("#keyword").val(),currentpage:1};
-		$("#scList").empty();
-		$("#scList").load("loadSolicitContributions.do", param, function(){
-			$("#scList").append(data);
-		});
-	} */
+		if(data.result == '01'){
+			setTimeout(function(){
+				window.location.href = 'login.do';
+			},1000);
+		}else if(data.result == '02'){
+			alert("你已报名，请勿重复报名！");
+		}
+	}).fail(function(data) {
+		swal("系统出错");
+	});
+}
 </script>
 </body>
 </html>

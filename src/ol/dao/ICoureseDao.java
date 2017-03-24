@@ -6,7 +6,6 @@ import java.util.List;
 
 
 
-import java.util.Map;
 
 import ol.entity.Courese;
 import ol.entity.LeanQueryModel;
@@ -26,9 +25,6 @@ public interface ICoureseDao {
 	
 	Courese findCourese(int pid);
 	
-	List<Courese> findAllCoureses(Integer userid);
-	
-	Integer findAllCouresesCount(Integer userid);
 	List<Courese> findAllCoureses(Integer userid);
 	
 	Integer findAllCouresesCount(Integer userid);

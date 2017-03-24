@@ -29,14 +29,14 @@ public class Courese implements java.io.Serializable {
 	 */
 	private static final long serialVersionUID = -5772576893959249024L;
 	private Integer coureseId;
-	private User user;
-	private String cName;
-	private String cDescribe;
-	private Timestamp startTime;
-	private Timestamp releaseTime;
-	private Integer status;
-	private Integer type;
-	private List<Enroll> enrolls = new ArrayList<Enroll>();
+	private User user;//所属老师
+	private String cName;//课程名称
+	private String cDescribe;//课程描述
+	private String startTime;//开始时间
+	private Timestamp releaseTime;//发布时间
+	private Integer status;//状态
+	private String type;//科目 
+	private List<Enroll> enrolls = new ArrayList<Enroll>();//课程报名记录
 
 	/** default constructor */
 	public Courese() {
@@ -82,11 +82,11 @@ public class Courese implements java.io.Serializable {
 	}
 
 	@Column(name = "start_time", length = 255)
-	public Timestamp getStartTime() {
+	public String getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(Timestamp startTime) {
+	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}
 
@@ -108,7 +108,7 @@ public class Courese implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "courese")
 	public List<Enroll> getEnrolls() {
 		return enrolls;
 	}
@@ -117,12 +117,12 @@ public class Courese implements java.io.Serializable {
 		this.enrolls = enrolls;
 	}
 	
-	@Column(name = "c_type")
-	public Integer getType() {
+	@Column(name = "c_type",length = 60)
+	public String getType() {
 		return type;
 	}
 
-	public void setType(Integer type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 

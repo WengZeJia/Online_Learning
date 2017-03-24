@@ -1,19 +1,37 @@
 package ol.controller;
 
+import java.io.PrintWriter;
 import java.sql.Timestamp;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import ol.dao.IAdminDao;
 import ol.dao.ICoureseDao;
 import ol.dao.IEnrollDao;
 import ol.dao.IUserDao;
+import ol.entity.Courese;
+import ol.entity.Enroll;
+import ol.entity.LeanQueryModel;
 import ol.entity.User;
+import ol.entity.page.PageView;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.google.gson.Gson;
+
+
+
+
+
+
 
 @Controller
 @RequestMapping("/")
@@ -28,7 +46,7 @@ public class UserController {
 	@Autowired
 	private ICoureseDao coureseDao;
 	
-	@RequestMapping("index.do")
+	@RequestMapping("list.do")
 	public ModelAndView index(){
 		ModelAndView mav = new ModelAndView("index");
 		
@@ -79,4 +97,69 @@ public class UserController {
 			return mav;
 		}
 	}
+	@RequestMapping("search.do")
+	public ModelAndView searchCourese(HttpServletRequest request,LeanQueryModel condition){
+		int pageNo =  request.getParameter("pageNo") ==null?1:Integer.parseInt(request.getParameter("pageNo"));
+		PageView<Courese> page = new PageView<Courese>(4, pageNo);
+		if(condition.getKeyword()==null) condition.setKeyword("");
+		condition.setFirstResult(page.getFirstResult());
+		condition.setMaxResutl(page.getMaxresult());
+		List<Courese> scList = coureseDao.searchCourese(condition);
+		page.setTotalrecord(coureseDao.findCount(condition));
+		page.setRecords(scList);
+		page.setTotalrecord(coureseDao.findCount(condition));
+		return new ModelAndView("scList").addObject("page", page);
+	}
+	
+	@RequestMapping("index.do")
+	public ModelAndView loadCourese(HttpServletRequest request,LeanQueryModel condition){
+		int pageNo =  request.getParameter("pageNo") ==null?1:Integer.parseInt(request.getParameter("pageNo"));
+		PageView<Courese> page = new PageView<Courese>(4, pageNo);
+		if(condition.getKeyword()==null) condition.setKeyword("");
+		condition.setFirstResult(page.getFirstResult());
+		condition.setMaxResutl(page.getMaxresult());
+		List<Courese> scList = coureseDao.searchCourese(condition);
+		page.setTotalrecord(coureseDao.findCount(condition));
+		page.setRecords(scList);
+		page.setTotalrecord(coureseDao.findCount(condition));
+		return new ModelAndView("index").addObject("page", page);
+	}
+	
+	/**
+	 * 新增报名记录
+	 */
+	@RequestMapping(value="save.do")
+	public void save(HttpServletRequest request,HttpSession session, PrintWriter pw) throws Exception {
+		User user = (User) request.getSession().getAttribute("currUser");
+		Map<String, Object> rs =new HashMap<String, Object>();
+		if(user != null){
+			try{
+				int pId = Integer.parseInt(request.getParameter("pid"));
+				Courese cs = coureseDao.findCourese(pId);
+				Enroll els = enrollDao.findEnroll(pId);
+				if(els.getUser().getUserId()!= null && !els.getUser().getUserId().equals(cs.getUser().getUserId())){
+					rs.put("result", "02");
+					rs.put("msg2", "你已报名，请勿重复报名！");
+				}else {
+					Enroll el = new Enroll();
+					el.seteTime(new Date());
+					el.setCourese(cs);
+					el.setStatus(1);
+					el.setUser((User)session.getAttribute("currUser"));
+					enrollDao.saveEnroll(el);
+					rs.put("result", "00");
+					rs.put("msg","报名成功！");
+				}
+				
+     		} catch(Exception e){ 
+				rs.put("result", "03");
+				rs.put("msg", "系统繁忙");
+			}
+		}else{
+			rs.put("result", "01");
+			rs.put("msg", "请先登录");
+			}
+		pw.write(new Gson().toJson(rs));
+	}
+	
 }

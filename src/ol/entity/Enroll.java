@@ -1,6 +1,7 @@
 package ol.entity;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -21,14 +22,14 @@ public class Enroll implements java.io.Serializable {
 	// Fields
 
 	/**
-	 * 
+	 * 学生的报名的课程表
 	 */
 	private static final long serialVersionUID = -5772576893959249024L;
 	private Integer enrollId;
-	private User user;
-	private Courese courese;
-	private Timestamp eTime;
-	private Integer status;
+	private User user;//所属用户
+	private Courese courese;//所属课程
+	private Date eTime;//报名时间
+	private Integer status;//状态，0
 
 	/** default constructor */
 	public Enroll() {
@@ -75,12 +76,12 @@ public class Enroll implements java.io.Serializable {
 	}
 
 	@Column(name = "enroll_time")
-	public Timestamp geteTime() {
+	public Date geteTime() {
 		return eTime;
 	}
 
-	public void seteTime(Timestamp eTime) {
-		this.eTime = eTime;
+	public void seteTime(Date date) {
+		this.eTime = date;
 	}
 	
 	
