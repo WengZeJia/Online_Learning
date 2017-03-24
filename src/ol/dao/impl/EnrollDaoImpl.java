@@ -14,8 +14,7 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 
 	@Override
 	public void saveEnroll(Enroll e) {
-		// TODO Auto-generated method stub
-		
+		this.getHibernateTemplate().saveOrUpdate(e);
 	}
 
 	@Override
@@ -26,8 +25,7 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 
 	@Override
 	public Enroll findEnroll(int eId) {
-		// TODO Auto-generated method stub
-		return null;
+	    return this.getHibernateTemplate().get(Enroll.class, eId);
 	}
 
 	@Override
@@ -50,8 +48,8 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 
 	@Override
 	public Integer findCoureseEnrollCount(int pid) {
-		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

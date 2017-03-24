@@ -39,5 +39,5 @@ public interface IEnrollDao {
 	List<Enroll> findCoureseEnroll(int pid, int start, int end);
 	
 	Integer findCoureseEnrollCount(int pid);
-	
+	/*Enroll findSolicitContributions(int scid);*/
 }
