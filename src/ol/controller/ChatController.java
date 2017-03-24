@@ -60,14 +60,21 @@ public class ChatController {
 			result.put("message", "请先登陆");
 			return result;
 		}
+		ServletContext application = req.getServletContext();  //获取application
+		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
+		int courseId = msgVo.getCourseId();
+		Integer fromUserId = msgVo.getFromUserId();
+		if(cmCenter.getStuGagStatus(courseId, fromUserId)) {
+			result.put("result", "N");
+			result.put("message", "你目前处于被禁言状态，无法发送消息");
+			return result;
+		}
+		
 		ChatMessageBean msgBean = new ChatMessageBean(msgVo); //将请求Vo转化为Bean
 		ChatLog chatLog = changeChatBeanToChatLog(msgBean); //将Bean转换为Entity
 		chatDao.saveChatLog(chatLog); //保存聊天信息到数据库
 		
-		ServletContext application = req.getServletContext();  //获取application
 		
-		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
-		int courseId = msgVo.getCourseId();
 		cmCenter.addCourseChatMsg(courseId, msgBean); //将一条聊天信息Bean添加到数据中心
 		// 将消息存入到application的范围
 		application.setAttribute("chatMessageCenter", cmCenter);
@@ -141,7 +148,7 @@ public class ChatController {
 		}
 		ChatMessageCenter cmCenter = (ChatMessageCenter) req.getServletContext().getAttribute("chatMessageCenter");
 		try {
-			cmCenter.setStuHandUpStatus(reqVo.getCourseId(), reqVo.getUserId(), reqVo.isGag());
+			cmCenter.setStuGagStatus(reqVo.getCourseId(), reqVo.getUserId(), reqVo.isGag());
 		} catch(Exception e) {
 			result.put("result", "N");
 			result.put("message", "服务器繁忙，请稍后重试");

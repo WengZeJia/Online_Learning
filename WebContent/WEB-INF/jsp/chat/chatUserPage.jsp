@@ -2,7 +2,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
  <ul>
  	<c:forEach var="user" items="${courseUsers }">
-	 	<li class="${sessionScope.user.userId == user.userId ?'choosed':''}">
+	 	<li class="${sessionScope.user.userId == user.userId ?'choosed':''}" userId="${user.userId }">
 	 		<c:choose>
 	 			<c:when test="${user.online }">
 			        <label class="online"></label>
@@ -12,7 +12,7 @@
 	 			</c:otherwise>
 	 		</c:choose>
 	        <a href="javascript:;" class="chat03_name">${user.realName }</a>
-	        <c:if test="${sessionScope.user.role==1 }">
+	        <c:if test="${sessionScope.user.role==1 && sessionScope.user.userId != user.userId}">
 	        	<c:choose>
 	        		<c:when test="${user.gag }">
 	        			<a href="javascript:;" class="user_gag_op chat03_gag"></a>

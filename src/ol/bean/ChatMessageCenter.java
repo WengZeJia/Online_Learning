@@ -132,7 +132,7 @@ public class ChatMessageCenter {
 	 * @param status
 	 */
 	public void setStuGagStatus(int courseId, int userId, boolean status) {
-		LinkedList<UserBean> userList = this.couseUserMap.get(courseId);
+		LinkedList<UserBean> userList = getCourseUsers(courseId);
 		for (UserBean userBean : userList) {
 			if(userBean.getUserId() == userId && userBean.getRole().intValue() == 0) {
 				userBean.setGag(status);
@@ -147,11 +147,21 @@ public class ChatMessageCenter {
 	 * @param status
 	 */
 	public void setStuHandUpStatus(int courseId, int userId, boolean status) {
-		LinkedList<UserBean> userList = this.couseUserMap.get(courseId);
+		LinkedList<UserBean> userList = getCourseUsers(courseId);
 		for (UserBean userBean : userList) {
 			if(userBean.getUserId() == userId && userBean.getRole().intValue() == 0) {
 				userBean.setNoHandUp(status);
 			}
 		}
+	}
+	
+	public boolean getStuGagStatus(int courseId, int userId) {
+		LinkedList<UserBean> userList = getCourseUsers(courseId);
+		for (UserBean userBean : userList) {
+			if(userBean.getUserId() == userId) {
+				return userBean.isGag();
+			}
+		}
+		return true;
 	}
 }

@@ -101,12 +101,13 @@ $(document).ready(function() {
 		if($(this).hasClass("chat03_talk_ok")) {
 			status = true;
 		}
+		var userId = $(this).parents("li").attr("userId");
 
 		$.ajax({
 			cache : false,
 			timeout : 30000, //30s超时
 			url : "setCourseStuGagStatus.json",
-			data: {'courseId':1, 'gag':status},
+			data: {'courseId':1, 'gag':status, 'userId':userId},
 			dataType : "JSON"
 		})
 		.done(function(rs){
@@ -128,28 +129,29 @@ $(document).ready(function() {
 	
 	$(document).on('click', '.user_hand_op', function () { //设置学生举手或禁止
 		var status;
-		if($(this).hasClass("chat03_hand_up")) {
+		if($(this).hasClass("chat03_hand_stop")) {
 			status = false;
 		}
-		if($(this).hasClass("chat03_hand_stop")) {
+		if($(this).hasClass("chat03_hand_up")) {
 			status = true;
 		}
 
+		var userId = $(this).parents("li").attr("userId");
 		$.ajax({
 			cache : false,
 			timeout : 30000, //30s超时
 			url : "setCourseStuHandUpStatus.json",
-			data: {'courseId':1, 'noHandUp':status},
+			data: {'courseId':1, 'noHandUp':status, 'userId':userId},
 			dataType : "JSON"
 		})
 		.done(function(rs){
 			if(rs.result == "Y") {
 				if(status) {
-					$(this).removeClass("chat03_hand_stop");
-					$(this).addClass("chat03_hand_up");
-				} else {
 					$(this).removeClass("chat03_hand_up");
 					$(this).addClass("chat03_hand_stop");
+				} else {
+					$(this).removeClass("chat03_hand_stop");
+					$(this).addClass("chat03_hand_up");
 				}
 			} else {
 				alert(rs.message);
