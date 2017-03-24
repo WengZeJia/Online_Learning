@@ -20,7 +20,6 @@ $(document).ready(function() {
 		.done(function(rs){
 			if(rs.result == "Y") {
 				showChatMsgs(rs.data);
-				$(".chat01_content").scrollTop($(".mes").height());
 				$("#textarea").val("");
 			} else {
 				alert(rs.message);
@@ -70,18 +69,22 @@ $(document).ready(function() {
 	 */
 	function showChatMsgs(chatMsgList) {
 		var talkHtml = "";
-		for(var i=0; i<chatMsgList.length; i++) {
+		var oldChatLength = $(".mes").find("div.message.clearfix").size() || 0;
+		var newChatLength = chatMsgList.length;
+		for(var i=0; i<newChatLength; i++) {
 			var name = chatMsgList[i].fromUserName;
 			var content = chatMsgList[i].content;
-			var date = new Date(chatMsgList[i].dateTime);
+			var date = new Date(Date.parse(chatMsgList[i].dateTime.replace(/-/g, "/")));
 			var month = date.getMonth() + 1; //月份先加上1
 			var dateTimeStr = date.getFullYear() + "-" + month + "-" + date.getDate() + "  " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
 			content = changeFace(content);
 			talkHtml += "<div class='message clearfix'>" + "<div class='wrap-text'>" + "<h5 class='clearfix'>" + name + "</h5>" + "<div>" + content + "</div>" + "</div>" + "<div class='wrap-ri'>" + "<div clsss='clearfix'><span>" + dateTimeStr + "</span></div>" + "</div>" + "<div style='clear:both;'></div></div>";
 		}
 		
-		$(".mes").html("").append(talkHtml);
-		
+		$(".mes").html(talkHtml);
+		if(newChatLength > oldChatLength) {
+			$(".chat01_content").scrollTop($(".mes").height());
+		}
 		/**
 		 * 替换表情
 		 */
@@ -94,14 +97,15 @@ $(document).ready(function() {
 	}
 	
 	$(document).on('click', '.user_gag_op', function () { //设置学生发言或禁言
+		var self = this;
 		var status;
-		if($(this).hasClass("chat03_gag")) {
+		if($(self).hasClass("chat03_gag")) {
 			status = false;
 		}
-		if($(this).hasClass("chat03_talk_ok")) {
+		if($(self).hasClass("chat03_talk_ok")) {
 			status = true;
 		}
-		var userId = $(this).parents("li").attr("userId");
+		var userId = $(self).parents("li").attr("userId");
 
 		$.ajax({
 			cache : false,
@@ -113,11 +117,11 @@ $(document).ready(function() {
 		.done(function(rs){
 			if(rs.result == "Y") {
 				if(status) {
-					$(this).removeClass("chat03_gag");
-					$(this).addClass("chat03_talk_ok");
+					$(self).removeClass("chat03_talk_ok");
+					$(self).addClass("chat03_gag");
 				} else {
-					$(this).removeClass("chat03_talk_ok");
-					$(this).addClass("chat03_gag");
+					$(self).removeClass("chat03_gag");
+					$(self).addClass("chat03_talk_ok");
 				}
 			} else {
 				alert(rs.message);
@@ -128,11 +132,12 @@ $(document).ready(function() {
 	})
 	
 	$(document).on('click', '.user_hand_op', function () { //设置学生举手或禁止
+		var self = this;
 		var status;
-		if($(this).hasClass("chat03_hand_stop")) {
+		if($(self).hasClass("chat03_hand_stop")) {
 			status = false;
 		}
-		if($(this).hasClass("chat03_hand_up")) {
+		if($(self).hasClass("chat03_hand_up")) {
 			status = true;
 		}
 
@@ -147,11 +152,11 @@ $(document).ready(function() {
 		.done(function(rs){
 			if(rs.result == "Y") {
 				if(status) {
-					$(this).removeClass("chat03_hand_up");
-					$(this).addClass("chat03_hand_stop");
+					$(self).removeClass("chat03_hand_up");
+					$(self).addClass("chat03_hand_stop");
 				} else {
-					$(this).removeClass("chat03_hand_stop");
-					$(this).addClass("chat03_hand_up");
+					$(self).removeClass("chat03_hand_stop");
+					$(self).addClass("chat03_hand_up");
 				}
 			} else {
 				alert(rs.message);
