@@ -113,5 +113,15 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 		return (List<Courese>)this.getHibernateTemplate().find("from Courese");
 	}
 
+	@Override
+	public List<Courese> queryAllCourse() {
+		StringBuffer hql = new StringBuffer();
+		hql.append(" from Courese as c")
+		   .append(" left join fetch c.user")
+		   .append(" left join fetch c.enrolls as e")
+		   .append(" left join fetch e.user")
+		   .append(" order by c.releaseTime desc");
+		return this.getHibernateTemplate().find(hql.toString());
+	}
 
 }

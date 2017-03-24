@@ -6,13 +6,19 @@
   </welcome-file-list>
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>
-			classpath:applicationContext.xml
-		</param-value>
+    <param-value>classpath:applicationContext.xml</param-value>
   </context-param>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>
+   <!-- 注册监听器 -->
+  <listener>
+  	<listener-class>ol.listener.InitDataListener</listener-class>
+  </listener>
+  <listener>
+  	<listener-class>ol.listener.UserLoginOutListener</listener-class>
+  </listener>
+  
   <servlet>
     <servlet-name>spring-mvc</servlet-name>
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -21,6 +27,7 @@
   <servlet-mapping>
     <servlet-name>spring-mvc</servlet-name>
     <url-pattern>*.do</url-pattern>
+    <url-pattern>*.json</url-pattern>
   </servlet-mapping>
   <filter>
     <filter-name>characterEncodingFilter</filter-name>

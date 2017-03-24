@@ -48,4 +48,5 @@ public interface ICoureseDao {
 	public Long findCount(LeanQueryModel condition);
 	public List<Courese> findAll();
 	
+	List<Courese> queryAllCourse();
 }
