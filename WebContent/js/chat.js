@@ -74,8 +74,6 @@ $(document).ready(function() {
 			} else {
 				alert(rs.message);
 			}
-		}).fail(function(){
-			alert("服务器正在休息，请稍后再尝试");
 		});
 	};
 	
@@ -133,8 +131,6 @@ $(document).ready(function() {
 			if(rs.result == "Y") {
 				alertStudentHandUpMsg(rs.data);
 			}
-		}).fail(function(){
-			alert("服务器正在休息，请稍后再尝试");
 		});
 		
 		/**
