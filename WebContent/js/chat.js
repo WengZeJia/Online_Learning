@@ -1,7 +1,28 @@
 $(document).ready(function() {
+	$("#handUp").click(function() {
+		var params = {'courseId':1, 'fromUserId':$('#userId').val()};
+		var stuHandUpLoading = layer.load(2, {shade: [0.8, '#393D49']});
+		$.ajax({
+			cache : false,
+			timeout : 30000, //30s超时
+			url : "stuHandUp.json",
+			data: params,
+			method: "POST",
+			dataType : "JSON"
+		})
+		.done(function(rs){
+			layer.close(stuHandUpLoading);
+			alert(rs.message);
+		})
+		.fail(function(){
+			alert("服务器正在休息，请稍后再尝试");
+		});
+	});
+	
+	
 	$(".send_msg").click(function() {
 		var content = $("#textarea").val();
-		if(null == content && "" == content) {
+		if(null == content || "" == content) {
 			alert("请输入聊天内容!");
 			return ;
 		}
@@ -33,6 +54,7 @@ $(document).ready(function() {
 	setInterval(function () { //
 		getChatMsgs();
 		reloadUserListPage();
+		getStudentHandUpMsg();
 	}, 1000);
 	
 	/**
@@ -96,6 +118,41 @@ $(document).ready(function() {
 		}
 	}
 	
+	/**
+	 * 获取学生举手消息
+	 */
+	function getStudentHandUpMsg() {
+		$.ajax({
+			cache : false,
+			timeout : 30000, //30s超时
+			url : "getStudentHandUpMsg.json",
+			data: {'courseId':1},
+			dataType : "JSON"
+		})
+		.done(function(rs){
+			if(rs.result == "Y") {
+				alertStudentHandUpMsg(rs.data);
+			}
+		}).fail(function(){
+			alert("服务器正在休息，请稍后再尝试");
+		});
+		
+		/**
+		 * 弹出学生举手消息
+		 */
+		function alertStudentHandUpMsg(content) {
+			layer.msg(content, {
+				title:'系统提示',
+				closeBtn :1,
+				icon:6,
+				shade: 0,
+				offset: 'rb',
+				anim:2,
+				time: 3000
+			}); 
+		}
+	}
+	
 	$(document).on('click', '.user_gag_op', function () { //设置学生发言或禁言
 		var self = this;
 		var status;
@@ -106,7 +163,7 @@ $(document).ready(function() {
 			status = true;
 		}
 		var userId = $(self).parents("li").attr("userId");
-
+		var gagLoading = layer.load(2, {shade: [0.8, '#393D49']});
 		$.ajax({
 			cache : false,
 			timeout : 30000, //30s超时
@@ -115,6 +172,7 @@ $(document).ready(function() {
 			dataType : "JSON"
 		})
 		.done(function(rs){
+			layer.close(gagLoading);
 			if(rs.result == "Y") {
 				if(status) {
 					$(self).removeClass("chat03_talk_ok");
@@ -127,6 +185,7 @@ $(document).ready(function() {
 				alert(rs.message);
 			}
 		}).fail(function(){
+			layer.close(gagLoading);
 			alert("服务器正在休息，请稍后再尝试");
 		});
 	})
@@ -142,6 +201,7 @@ $(document).ready(function() {
 		}
 
 		var userId = $(this).parents("li").attr("userId");
+		var noHandUpLoading = layer.load(2, {shade: [0.8, '#393D49']});
 		$.ajax({
 			cache : false,
 			timeout : 30000, //30s超时
@@ -150,6 +210,7 @@ $(document).ready(function() {
 			dataType : "JSON"
 		})
 		.done(function(rs){
+			layer.close(noHandUpLoading);
 			if(rs.result == "Y") {
 				if(status) {
 					$(self).removeClass("chat03_hand_up");
@@ -162,6 +223,7 @@ $(document).ready(function() {
 				alert(rs.message);
 			}
 		}).fail(function(){
+			layer.close(noHandUpLoading);
 			alert("服务器正在休息，请稍后再尝试");
 		});
 	

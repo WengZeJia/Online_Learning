@@ -3,7 +3,11 @@
 <c:set var="context" value="${pageContext.request.contextPath }" />
 <link rel="stylesheet" type="text/css" href="${context }/css/chat.css" />
 <script type="text/javascript" src="${context }/js/jquery.js"></script>
+<script type="text/javascript" src="${context }/js/layer.js"></script>
 <script type="text/javascript" src="${context }/js/chat.js"></script>
+<script type="text/javascript">
+window.alert = layer.alert;
+</script>
 <div class="kePublic">
 <input type="hidden" id="userId" value="${sessionScope.user.userId }">
 <input type="hidden" id="userName" value="${sessionScope.user.realName }">
@@ -25,7 +29,7 @@
                 <div class="chat02_title">
                     <a class="chat02_title_btn ctb01" href="javascript:;"></a>
                     <c:if test="${sessionScope.user.role==0 }">
-	                    <a class="chat02_hand_up" href="javascript:;"></a>
+	                    <a id="handUp" class="chat02_hand_up" href="javascript:;"></a>
                     </c:if>
                     <!-- <label class="chat02_title_t"><a href="chat.htm" target="_blank">聊天记录</a></label> -->
                     <div class="wl_faces_box">

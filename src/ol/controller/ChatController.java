@@ -9,6 +9,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
 import ol.bean.ChatMessageBean;
 import ol.bean.ChatMessageCenter;
 import ol.bean.UserBean;
@@ -19,12 +25,7 @@ import ol.entity.User;
 import ol.vo.ChatSendMsgVo;
 import ol.vo.CourseUserGagReqVo;
 import ol.vo.CourseUserHandUpReqVo;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
+import ol.vo.StudentHandUpReqVo;
 
 @Controller
 @RequestMapping("/chat")
@@ -44,6 +45,81 @@ public class ChatController {
 		} else {
 			return new ModelAndView("chat/chatPage");
 		}
+	}
+	
+	/**
+	 * 发送聊天内容
+	 * @throws Exception 
+	 */
+	@RequestMapping("stuHandUp.json")
+	@ResponseBody
+	public Object stuHandUp(HttpServletRequest req, StudentHandUpReqVo reqVo, HttpServletResponse resp) throws Exception{
+		User user = (User) req.getSession().getAttribute(USER_SESSION_KEY);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(user == null) {
+			result.put("result", "N");
+			result.put("message", "请先登陆");
+			return result;
+		}
+		ServletContext application = req.getServletContext();  //获取application
+		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
+		int courseId = reqVo.getCourseId();
+		Integer fromUserId = reqVo.getFromUserId();
+		UserBean courseTeacher = cmCenter.getCourseTeacher(courseId);
+		if(!courseTeacher.isOnline()) {
+			result.put("result", "N");
+			result.put("message", "目前"+courseTeacher.getRealName()+"还没上线，无法举手");
+			return result;
+		}
+		UserBean courseUser = cmCenter.getCourseUser(courseId, fromUserId);
+		if(courseUser.isNoHandUp()) {
+			result.put("result", "N");
+			result.put("message", "你目前处于被禁止举手状态，无法举手");
+			return result;
+		}
+		
+		courseTeacher.getStuHandUpMsgList().addLast(courseUser.getRealName()+"正在举手...");
+		// 将消息存入到application的范围
+		application.setAttribute("chatMessageCenter", cmCenter);
+		result.put("result", "Y");
+		result.put("message", "你的举手消息已经发出，等待老师响应..");
+		return result;
+	}
+	
+	/**
+	 * 获取学生举手消息
+	 * @throws Exception 
+	 */
+	@RequestMapping("getStudentHandUpMsg.json")
+	@ResponseBody
+	public Object getStudentHandUpMsg(HttpServletRequest req, Integer courseId, HttpServletResponse resp) throws Exception{
+		User user = (User) req.getSession().getAttribute(USER_SESSION_KEY);
+		Map<String, Object> result = new HashMap<String, Object>();
+		if(user == null) {
+			result.put("result", "N");
+			result.put("message", "请先登陆");
+			return result;
+		}
+		if(user.getRole().intValue()!=1) {
+			result.put("result", "N");
+			result.put("message", "非教师不能执行该操作");
+			return result;
+		}
+		ServletContext application = req.getServletContext();  //获取application
+		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
+		UserBean courseTeacher = cmCenter.getCourseUser(courseId, user.getUserId());
+		LinkedList<String> stuHandUpMsgList = courseTeacher.getStuHandUpMsgList();
+		if(stuHandUpMsgList==null || stuHandUpMsgList.isEmpty()) {
+			result.put("result", "N");
+			result.put("message", "目前没人举手");
+			return result;
+		}
+		String oneHandUpMsg = stuHandUpMsgList.removeFirst();
+		// 将消息存入到application的范围
+		application.setAttribute("chatMessageCenter", cmCenter);
+		result.put("result", "Y");
+		result.put("data", oneHandUpMsg);
+		return result;
 	}
 	
 	/**
