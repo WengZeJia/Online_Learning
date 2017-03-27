@@ -51,36 +51,31 @@
 					<tr>
 						<td><a href="javascript:void(0);">${item.user.realName }</a></td>
 						<td class="price">${item.courese.cName }</td>
-						<td class="price">${item.eTime }</td>
-						<td><a href="chat/toChatPage.do" class="reserve">进入学堂</a></td>
+						<td class="price"><fmt:formatDate value="${item.eTime }" pattern="yyyy-MM-dd HH:mm:ss"></fmt:formatDate></td>
+						<td><a href="chat/toChatPage.do?coureseId=${item.courese.coureseId }" class="reserve" target="_blank">进入学堂</a></td>
 					</tr>
 				</c:forEach>
 				<tr>
 					<td colspan="7">
 						<div class="pagelist">
 							<c:choose>
-								<%-- 如果总页数不足10页，那么把所有的页数都显示出来！ --%>
 								<c:when test="${page.totalpage <= page.maxresult }">
 									<c:set var="begin" value="1" />
 									<c:set var="end" value="${page.totalpage }" />
 								</c:when>
 								<c:otherwise>
-									<%-- 当总页数>10时，通过公式计算出begin和end --%>
 									<c:set var="begin" value="${page.currentpage-5 }" />
 									<c:set var="end" value="${page.currentpage+4 }" />
-									<%-- 头溢出 --%>
 									<c:if test="${begin < 1 }">
 										<c:set var="begin" value="1" />
 										<c:set var="end" value="${page.maxresult }" />
 									</c:if>
-									<%-- 尾溢出 --%>
 									<c:if test="${end > page.totalpage }">
 										<c:set var="begin" value="${page.totalpage - 9 }" />
 										<c:set var="end" value="${page.totalpage }" />
 									</c:if>
 								</c:otherwise>
 							</c:choose>
-							<%-- 循环遍历页码列表 --%>
 							<a href="" onclick="jumpTo('${page.currentpage-1}');return false">上一页</a>
 							<c:forEach var="i" begin="${begin }" end="${end }">
 								<c:choose>

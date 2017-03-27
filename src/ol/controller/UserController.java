@@ -28,11 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 
-
-
-
-
-
 @Controller
 @RequestMapping("/")
 public class UserController {
@@ -158,17 +153,14 @@ public class UserController {
 					rs.put("msg","报名成功！");
 				}else {
 					rs.put("result", "02");
-					rs.put("msg2", "你已报名，请勿重复报名！");
 				}
 				
      		} catch(Exception e){ 
 				rs.put("result", "03");
-				rs.put("msg", "系统繁忙");
 //     			throw new RuntimeException(e);
 			}
 		}else{
 			rs.put("result", "01");
-			rs.put("msg", "请先登录");
 			}
 		pw.write(new Gson().toJson(rs));
 	}
