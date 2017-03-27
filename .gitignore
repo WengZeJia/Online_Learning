@@ -2,3 +2,5 @@
 /.settings
 /.classpath
 /.project
+/src/config.properties
+/src/log4j.properties
