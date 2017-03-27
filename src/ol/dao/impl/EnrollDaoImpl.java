@@ -1,13 +1,17 @@
 package ol.dao.impl;
 
+import java.sql.SQLException;
 import java.util.List;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
 
-import ol.dao.ICoureseDao;
 import ol.dao.IEnrollDao;
-import ol.entity.Courese;
 import ol.entity.Enroll;
+import ol.entity.LeanQueryModel;
 
 @Repository
 public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
@@ -17,11 +21,6 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 		this.getHibernateTemplate().saveOrUpdate(e);
 	}
 
-	@Override
-	public void updateEnroll(Enroll e) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -29,34 +28,45 @@ public class EnrollDaoImpl extends HibernateSupport implements IEnrollDao {
 	    return  this.getHibernateTemplate().find("from Enroll AS e where e.courese.coureseId = ? and e.user.userId=?", eId, userId);
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Enroll> findUsersEnroll(int uid, int start, int end) {
-		return this.getHibernateTemplate().find("from Enroll AS e where e.user.userId = ?",uid);
-	}
-
-	@Override
-	public Integer findUsersEnrollCount(int udi) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Enroll> findCoureseEnroll(int pid, int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer findCoureseEnrollCount(int pid) {
-		return null;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Enroll> userEnroll(int uid) {
-		return this.getHibernateTemplate().find("from Enroll AS e where e.user.userId = ?",uid);
+	public List<Enroll> findCoureseEnroll(final int pid, int start, int end) {
+		return (List<Enroll>) this.getHibernateTemplate().execute(new HibernateCallback<Object>() {
+			@Override
+			public Object doInHibernate(Session session)
+					throws HibernateException, SQLException {
+				return session.createCriteria(Enroll.class).add(Restrictions.eq("enrollId", pid)).list().size();
+			}
+		});
+		
 	}
 
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Enroll> findEnrollByUserId(final int uid,final LeanQueryModel condition) {
+		return (List<Enroll>) this.getHibernateTemplate().execute(new HibernateCallback<Object>() {
+			@Override
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createCriteria(Enroll.class)
+						.add(Restrictions.eq("user.userId", uid))
+						.setFirstResult(condition.getFirstResult())
+						.setMaxResults(condition.getMaxResutl()).list();
+			}
+			
+		});
+	}
+
+	@Override
+	public Long findCount(LeanQueryModel condition) {
+		return Long.valueOf((Integer) this.getHibernateTemplate().execute(new HibernateCallback<Object>() {
+			@Override
+			public Object doInHibernate(Session session) throws HibernateException, SQLException {
+				return session.createCriteria(Enroll.class).list().size();
+			}
+			
+		}));
+	}
 
 }

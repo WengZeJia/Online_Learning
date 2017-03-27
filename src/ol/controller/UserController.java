@@ -53,11 +53,6 @@ public class UserController {
 		return mav;
 	}
 	
-	@RequestMapping("toRegist.do")
-	public String toRegist(){
-		return "regist";
-	}
-	
 	@RequestMapping("regist.do")
 	public ModelAndView regist(User user){
 		ModelAndView mav = new ModelAndView("login");
@@ -121,20 +116,19 @@ public class UserController {
 		List<Courese> scList = coureseDao.searchCourese(condition);
 		page.setTotalrecord(coureseDao.findCount(condition));
 		page.setRecords(scList);
-		page.setTotalrecord(coureseDao.findCount(condition));
 		return new ModelAndView("index").addObject("page", page);
 	}
 	//报名记录
 	@RequestMapping("record.do")
 	public ModelAndView searchEnroll(HttpServletRequest request,LeanQueryModel condition){
 		User user = (User) request.getSession().getAttribute("user");
-		int currentpage = Integer.parseInt(request.getParameter("currentpage"));
 		int pageNo =  request.getParameter("pageNo") ==null?1:Integer.parseInt(request.getParameter("pageNo"));
 		PageView<Enroll> page = new PageView<Enroll>(4,pageNo);
 		if(user != null){
 			condition.setFirstResult(page.getFirstResult());
 			condition.setMaxResutl(page.getMaxresult());
-			List<Enroll> list = enrollDao.findCoureseEnroll(user.getUserId(), (currentpage-1)*page.getMaxresult(), page.getMaxresult());
+			List<Enroll> list = enrollDao.findEnrollByUserId(user.getUserId(), condition);
+			page.setTotalrecord(enrollDao.findCount(condition));
 			page.setRecords(list);
 			return new ModelAndView("profile").addObject("page", page);
 		}else{
@@ -168,9 +162,9 @@ public class UserController {
 				}
 				
      		} catch(Exception e){ 
-				/*rs.put("result", "03");
-				rs.put("msg", "系统繁忙");*/
-     			throw new RuntimeException(e);
+				rs.put("result", "03");
+				rs.put("msg", "系统繁忙");
+//     			throw new RuntimeException(e);
 			}
 		}else{
 			rs.put("result", "01");
