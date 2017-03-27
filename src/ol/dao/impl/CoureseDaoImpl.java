@@ -58,7 +58,7 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Courese> findAllCoureses(Integer userid) {
-		return this.getHibernateTemplate().find("from Courese");
+		return this.getHibernateTemplate().find("from Courese AS c where c.user.userId = ?", userid);
 	}
 
 	@SuppressWarnings("unchecked")

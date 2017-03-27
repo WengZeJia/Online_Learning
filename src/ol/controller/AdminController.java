@@ -241,7 +241,10 @@ public class AdminController {
 		ServletContext application = request.getServletContext();  //获取application
 		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
 		cmCenter.addCourse(courese.getCoureseId()); //添加课程
-		cmCenter.addCourseUser(courese.getCoureseId(), new UserBean(user));
+		UserBean courseTeacher = cmCenter.getCourseTeacher(courese.getCoureseId());
+		if(courseTeacher == null) {
+			cmCenter.addCourseUser(courese.getCoureseId(), new UserBean(user));
+		}
 		cmCenter.setUserOnline(user.getUserId());
 		return new ModelAndView("redirect:listCourese.do");
 	}

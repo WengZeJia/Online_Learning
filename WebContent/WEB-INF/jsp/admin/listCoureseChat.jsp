@@ -39,17 +39,12 @@
 						<td>${c.startTime }</td>
 						<td>${c.type}</td>
 						<td>
-							<a class="button border-main" href="" onclick="toChat('${c.coureseId}');return false">开始课程</a>
+							<a class="button border-main" href="${pageContext.request.contextPath }/chat/toChatPage.do?coureseId=${c.coureseId}" target="_blank">开始课程</a>
 			         	</td>
 					</tr>
 				</c:forEach>
 			</table>
 		</div>
 	</form>
-	<script type="text/javascript">
-		function toChat(id) {
-			window.location.href = "../chat/toChatPage.do?coureseId=" + id;
-		}
-	</script>
 </body>
 </html>

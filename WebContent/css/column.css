@@ -447,8 +447,8 @@
                color: #fff;
     			}
     	.input_search{
-    		    padding: 14px 0px;
+    		    /* padding: 14px 0px; */
     			border-radius: 6px;
     			border: 1px solid #CCC;
-    			height: 20px;
+    			height: 38px;
     			}

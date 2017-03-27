@@ -157,8 +157,10 @@ public class UserController {
 					
 					ServletContext application = request.getServletContext();  //获取application
 					ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
-					cmCenter.addCourseUser(pId, new UserBean(user));
-					cmCenter.setUserOnline(user.getUserId());
+					if(cmCenter.getCourseUser(pId, user.getUserId()) == null) {
+						cmCenter.addCourseUser(pId, new UserBean(user));
+						cmCenter.setUserOnline(user.getUserId());
+					}
 				}else {
 					rs.put("result", "02");
 				}
