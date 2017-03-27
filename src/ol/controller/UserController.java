@@ -167,9 +167,13 @@ public class UserController {
 	//报名记录
 		@RequestMapping("scDetail.do")
 		public ModelAndView scDetail(HttpServletRequest request,LeanQueryModel condition){
+			User user = (User) request.getSession().getAttribute("user");
+			if(user != null){
 				int pid = Integer.parseInt(request.getParameter("coureseId"));
-				Courese c = (Courese) coureseDao.findCourese(pid);
-				return new ModelAndView("scDetail").addObject("c", c);
-						
+				Courese courese = (Courese) coureseDao.findCourese(pid);
+				return new ModelAndView("scDetail").addObject("courese", courese);
+			}else{
+				return new ModelAndView("redirect:login.do");
+			}
 		}
 }

@@ -27,11 +27,11 @@
 				<li class="active"><a href="index.do">首页</a></li>
 				<li><a href="record.do">个人中心</a></li>
 				<li id="userInfo">
-					<c:if test="${sessionScope.currUser ne null}">
-						<a href="#" class="username">${sessionScope.currUser.realName}</a>
+					<c:if test="${sessionScope.user ne null}">
+						<a href="#" class="username">${sessionScope.user.realName}</a>
 						<a href="logout.do" class="logout">登出</a>
 					</c:if>
-					<c:if test="${sessionScope.currUser eq null}">
+					<c:if test="${sessionScope.user eq null}">
 						<a href="login.do">登录&nbsp;</a><!-- <a href="toRegist.do">注册</a> -->
 					</c:if>
 				</li>
@@ -47,7 +47,7 @@
 			<br/>
 			<table>
 				<tr>
-					<td>${c.cDescribe }</td>
+					<td>${courese.cDescribe }</td>
 				</tr>
 			</table>
 		</form>
