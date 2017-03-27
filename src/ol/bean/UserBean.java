@@ -1,6 +1,7 @@
 package ol.bean;
 
 import java.sql.Timestamp;
+import java.util.LinkedList;
 
 import ol.entity.User;
 
@@ -14,6 +15,8 @@ public class UserBean {
 	private boolean isOnline = false;
 	private boolean isGag = false; //是否禁言
 	private boolean isNoHandUp = false; //是否不能举手
+	
+	private LinkedList<String> stuHandUpMsgList = new LinkedList<String>();
 	
 	public UserBean() {
 	}
@@ -80,4 +83,11 @@ public class UserBean {
 	public void setNoHandUp(boolean isNoHandUp) {
 		this.isNoHandUp = isNoHandUp;
 	}
+	public LinkedList<String> getStuHandUpMsgList() {
+		return stuHandUpMsgList;
+	}
+	public void setStuHandUpMsgList(LinkedList<String> stuHandUpMsgList) {
+		this.stuHandUpMsgList = stuHandUpMsgList;
+	}
+	
 }

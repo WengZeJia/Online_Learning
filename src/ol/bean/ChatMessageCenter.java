@@ -155,6 +155,12 @@ public class ChatMessageCenter {
 		}
 	}
 	
+	/**
+	 * 获取课程学生的禁言状态
+	 * @param courseId
+	 * @param userId
+	 * @return
+	 */
 	public boolean getStuGagStatus(int courseId, int userId) {
 		LinkedList<UserBean> userList = getCourseUsers(courseId);
 		for (UserBean userBean : userList) {
@@ -163,5 +169,51 @@ public class ChatMessageCenter {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * 获取课程学生的举手状态
+	 * @param courseId
+	 * @param userId
+	 * @return
+	 */
+	public boolean getStuHandUpStatus(int courseId, int userId) {
+		LinkedList<UserBean> userList = getCourseUsers(courseId);
+		for (UserBean userBean : userList) {
+			if(userBean.getUserId() == userId) {
+				return userBean.isNoHandUp();
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * 获取发起课程的教师
+	 * @param courseId
+	 * @return
+	 */
+	public UserBean getCourseTeacher(int courseId) {
+		LinkedList<UserBean> userList = getCourseUsers(courseId);
+		for (UserBean userBean : userList) {
+			if(userBean.getRole().intValue() == 1) {
+				return userBean;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * 获取用户信息
+	 * @param courseId
+	 * @return
+	 */
+	public UserBean getCourseUser(int courseId, int userId) {
+		LinkedList<UserBean> userList = this.couseUserMap.get(USER_KEY_PREFIX + courseId);
+		for (UserBean userBean : userList) {
+			if(userBean.getUserId().intValue() == userId) {
+				return userBean;
+			}
+		}
+		return null;
 	}
 }
