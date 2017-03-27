@@ -12,11 +12,15 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/pintuer.css">
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/layer.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/index.js"></script>
 	<style type="text/css">
 		 .invalid {background: #BBB;}
 		 .invalid:hover {background-color: #BBB;}
 	</style>
+	<script type="text/javascript">
+		window.alert = layer.alert;
+	</script>
 </head>
 <body>
 
@@ -42,7 +46,6 @@
 		</nav>
 	</div>
 </header>
-
 <div id="headline">
 	<div class="center">
 		<hgroup>
@@ -51,7 +54,6 @@
 		</hgroup>
 	</div>
 </div>
-
 <div id="container">
 	<div class="list ticket">
 		<div class="new">
@@ -67,61 +69,22 @@
 			<table>
 				<thead>
 					<tr>
+						<th>开讲老师</th>
 						<th>课程</th>
 						<th>开课时间</th>
-						<th>结课时间</th>
+						<!-- <th>结课时间</th> -->
 						<th>科目类型</th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody id="scList">
-				
 				</tbody>
-				<%-- <tfoot>
-					
-					<tr>
-						<td colspan="7">
-							<%@include file="./Page.jsp" %>
-						</td>
-					</tr>
-				</tfoot> --%>
 			</table>
 		</div>
 	</div>
 </div>
-
 <footer id="footer">
 	<div class="bottom">Copyright © 在线学习平台| 粤ICP 备120110119 号| 经营许可证：L-YC-BK12345</div>
 </footer>
-<script type="text/javascript">
-//申请
-function enrol(pid){
-	var param = {pid: pid};
-	$.ajax({
-		type: "POST",
-		async: false,
-		url : 'save.do',
-		data : param,
-		dataType: "json"
-	}).done(function(data){
-		if(data.result == '00'){
-			/* $(".reserve").removeAttr("onclick");
-			$(".reserve").addClass("invalid");
-			$(".reserve").removeClass("a:hover");
-			$(".reserve").text("已报名"); */
-			alert("你已成功报名！");
-		}
-		if(data.result == '01'){
-			setTimeout(function(){
-				window.location.href = 'login.do';
-			},1000);
-		}else if(data.result == '02'){
-			alert("你已报名，请勿重复报名！");
-		}
-	}).fail(function(data) {
-		swal("系统出错");
-	});
-}
-</script>
 </body>
 </html>

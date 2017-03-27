@@ -26,3 +26,25 @@ function jumpTo(page){
 	var param = {"keyword":$("#keyword").val(), "pageNo":page};
 	searchCourese(param);
 }
+
+function enrol(pid){
+	var param = {pid: pid};
+	$.ajax({
+		type: "POST",
+		async: false,
+		url : 'save.do',
+		data : param,
+		dataType: "json"
+	}).done(function(data){
+		if(data.result == '00'){
+			alert("你已成功报名！");
+		}
+		if(data.result == '01'){
+			setTimeout(function(){
+				window.location.href = 'login.do';
+			},1000);
+		}else if(data.result == '02'){
+			alert("你已报名，请勿重复报名！");
+		}
+	});
+}

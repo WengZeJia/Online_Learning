@@ -1,6 +1,6 @@
 package ol.controller;
 
-import java.io.PrintWriter;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +13,7 @@ import ol.dao.ICoureseDao;
 import ol.dao.IEnrollDao;
 import ol.dao.IUserDao;
 import ol.entity.Admin;
+import ol.entity.Courese;
 import ol.entity.User;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -71,7 +73,7 @@ public class AdminController {
 		}else{
 			//老师登录
 			User user= userDao.findUserByUsernameAndPwd(username, pwd);
-			if(user != null){
+			if(user != null && user.getRole() == 1){
 				session.setAttribute("user", user);
 				return new ModelAndView("redirect:index.do");
 			}else{
@@ -139,7 +141,7 @@ public class AdminController {
 		if(userId == null){
 			return new ModelAndView("admin/editUser");
 		}else{
-			return new ModelAndView("admin/editUser").addObject("user", userDao.findUser(Integer.parseInt(userId)));
+			return new ModelAndView("admin/editUser").addObject("u", userDao.findUser(Integer.parseInt(userId)));
 		}
 	}
 	
@@ -151,7 +153,14 @@ public class AdminController {
 	@RequestMapping("saveUser.do")
 	public ModelAndView saveUser(HttpServletRequest request,User user){
 		try {
-			userDao.saveUser(user);
+			if(user.getUserId() != null){
+				User u = userDao.findUser(user.getUserId());
+				u.setPwd(user.getPwd());
+				u.setRealName(user.getRealName());
+				u.setRole(user.getRole());
+				userDao.saveUser(u);
+			}else
+				userDao.saveUser(user);
 		} catch (Exception e) {
 			return new ModelAndView("admin/editUser").addObject("error","提交失败，请联系管理员！");
 		}
@@ -164,12 +173,103 @@ public class AdminController {
 	 * @return
 	 */
 	@RequestMapping("delUser.do")
-	public String delUser(HttpServletRequest request,User user, PrintWriter pw){
+	@ResponseBody
+	public String delUser(HttpServletRequest request,User user){
 		try{
 			userDao.delete(user.getUserId());
 			return "success"; 
 		}catch(Exception e){ 
 			return "error";
+		}
+	}
+	
+	/**
+	 * 后台课程列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("listCourese.do")
+	public ModelAndView listCourese(HttpServletRequest request, HttpSession session){
+//		String username = request.getParameter("cname");
+//		String type = request.getParameter("type");
+		try {
+			User user = (User) session.getAttribute("user");
+			List<Courese> coureses =  coureseDao.findAllCoureses(user.getUserId());
+			return new ModelAndView("admin/listCourese").addObject("coureses", coureses);
+		} catch (Exception e) {
+			return new ModelAndView("redirect:login.do");
+		}
+	}
+	
+	/**
+	 * 课程编辑页面
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("editCourese.do")
+	public ModelAndView editCourese(HttpServletRequest request){
+		String coureseId = request.getParameter("coureseId");
+		if(coureseId == null){
+			return new ModelAndView("admin/editCourese");
+		}else{
+			return new ModelAndView("admin/editCourese").addObject("courese", coureseDao.findCourese(Integer.parseInt(coureseId)));
+		}
+	}
+	
+	/**
+	 * 课程编辑提交
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("saveCourese.do")
+	public ModelAndView saveCourese(HttpServletRequest request,Courese courese, HttpSession session){
+		try {
+			User user = (User) session.getAttribute("user");
+			if (courese.getCoureseId() == null) {
+				courese.setStatus(0);
+			}
+			courese.setReleaseTime(new Timestamp(new Date().getTime()));
+			courese.setUser(user);
+			coureseDao.saveCourese(courese);
+		} catch (Exception e) {
+			return new ModelAndView("admin/editCourese").addObject("error","提交失败，请联系管理员！");
+		}
+		return new ModelAndView("redirect:listCourese.do");
+	}
+	
+	/**
+	 * 更改课程上线状态
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("changeCStatus.do")
+	@ResponseBody
+	public String changeCStatus(HttpServletRequest request){
+		try{
+			String status = request.getParameter("status");
+			String coureseId = request.getParameter("coureseId");
+			Courese cou = coureseDao.findCourese(Integer.parseInt(coureseId));
+			cou.setStatus(Integer.parseInt(status));
+			coureseDao.saveCourese(cou);
+			return "success"; 
+		}catch(Exception e){ 
+			return "error";
+		}
+	}
+	
+	/**
+	 * 课程报名列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("listEnroll.do")
+	public ModelAndView listEnroll(HttpServletRequest request, HttpSession session){
+		String coureseId = request.getParameter("coureseId");
+		try {
+			Courese cou = coureseDao.findCourese(Integer.parseInt(coureseId));
+			return new ModelAndView("admin/listEnrolls").addObject("enrolls", cou.getEnrolls());
+		} catch (Exception e) {
+			return new ModelAndView("redirect:login.do");
 		}
 	}
 	

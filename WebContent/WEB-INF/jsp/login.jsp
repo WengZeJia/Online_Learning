@@ -22,9 +22,7 @@
 			<ul>
 				<!-- <li><a>&nbsp;</a></li> -->
 				<li><a href="index.do">首页</a></li>
-				<!--<li><a href="scenery.html">刊物列表</a></li>-->
-				<li><a href="profile.do">个人中心</a></li>
-				<!-- <li><a href="about.do">关于我们</a></li> -->
+				<li><a href="record.do">个人中心</a></li>
 				<li id="userInfo" class="active">
 					<c:if test="${sessionScope.currUser ne null}">
 						<a href="#" class="username">${sessionScope.currUser.realName}</a>
@@ -40,15 +38,7 @@
 </header>
 
 <div id="container">
-<!-- 	<aside class="sidebar">
-		<div class="sidebox hot">
-			<h2>热门刊物</h2>
-			<div class="figure" id="hotPeriod">
-				
-			</div>
-		</div>
-	</aside>
- -->	<div class="list ticket">
+ 	<div class="list ticket">
 		<form action="loginForm.do" method="post">
 			<h2>用户登录&nbsp;&nbsp;${msg }</h2>
 			<div class="form left">

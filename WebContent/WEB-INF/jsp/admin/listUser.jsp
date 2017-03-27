@@ -47,9 +47,6 @@
 							<a class="button border-red" href="" onclick="del('${user.userId}');return false"><span	class="icon-trash-o"></span>删除</a></td>
 					</tr>
 				</c:forEach>
-				<tr>
-					<td colspan="8"></td>
-				</tr>
 			</table>
 		</div>
 	</form>
@@ -57,19 +54,19 @@
 		function del(id) {
 			if (confirm("您确定要删除吗?")) {
 				$.ajax({
-					cache : false,
-					async : false,
-					type : "POST",
-					url : "delUser.do",
-					data : "userId=" + id,
-					success : function(data) {
-						alert("删除成功!");
-						gosearch();
-					},
-					error : function() {
-						alert("删除错误！请联系管理员");
-					}
-				});
+				       cache:false,
+				       async:false,
+					   type: "POST",
+				       url: "delUser.do",
+				       data: "userId="+id,
+				       success: function(data){
+				    	   alert("删除成功!");
+				    	   gosearch();
+				       },
+				       error:function(){
+				    	   alert("删除错误！请联系管理员");
+				       }
+				   });
 			}
 		}
 

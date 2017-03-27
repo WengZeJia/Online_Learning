@@ -28,11 +28,6 @@ import org.springframework.web.servlet.ModelAndView;
 import com.google.gson.Gson;
 
 
-
-
-
-
-
 @Controller
 @RequestMapping("/")
 public class UserController {
@@ -51,11 +46,6 @@ public class UserController {
 		ModelAndView mav = new ModelAndView("index");
 		
 		return mav;
-	}
-	
-	@RequestMapping("toRegist.do")
-	public String toRegist(){
-		return "regist";
 	}
 	
 	@RequestMapping("regist.do")
@@ -121,20 +111,19 @@ public class UserController {
 		List<Courese> scList = coureseDao.searchCourese(condition);
 		page.setTotalrecord(coureseDao.findCount(condition));
 		page.setRecords(scList);
-		page.setTotalrecord(coureseDao.findCount(condition));
 		return new ModelAndView("index").addObject("page", page);
 	}
 	//报名记录
 	@RequestMapping("record.do")
 	public ModelAndView searchEnroll(HttpServletRequest request,LeanQueryModel condition){
 		User user = (User) request.getSession().getAttribute("user");
-		int currentpage = Integer.parseInt(request.getParameter("currentpage"));
 		int pageNo =  request.getParameter("pageNo") ==null?1:Integer.parseInt(request.getParameter("pageNo"));
 		PageView<Enroll> page = new PageView<Enroll>(4,pageNo);
 		if(user != null){
 			condition.setFirstResult(page.getFirstResult());
 			condition.setMaxResutl(page.getMaxresult());
-			List<Enroll> list = enrollDao.findCoureseEnroll(user.getUserId(), (currentpage-1)*page.getMaxresult(), page.getMaxresult());
+			List<Enroll> list = enrollDao.findEnrollByUserId(user.getUserId(), condition);
+			page.setTotalrecord(enrollDao.findCount(condition));
 			page.setRecords(list);
 			return new ModelAndView("profile").addObject("page", page);
 		}else{
@@ -164,17 +153,14 @@ public class UserController {
 					rs.put("msg","报名成功！");
 				}else {
 					rs.put("result", "02");
-					rs.put("msg2", "你已报名，请勿重复报名！");
 				}
 				
      		} catch(Exception e){ 
-				/*rs.put("result", "03");
-				rs.put("msg", "系统繁忙");*/
-     			throw new RuntimeException(e);
+				rs.put("result", "03");
+//     			throw new RuntimeException(e);
 			}
 		}else{
 			rs.put("result", "01");
-			rs.put("msg", "请先登录");
 			}
 		pw.write(new Gson().toJson(rs));
 	}

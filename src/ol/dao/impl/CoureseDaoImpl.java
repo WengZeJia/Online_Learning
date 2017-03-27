@@ -9,6 +9,7 @@ import ol.entity.LeanQueryModel;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 	
-	private Class<?> clazz = null; 
 	@Override
 	public void saveCourese(Courese c) {
 		this.getHibernateTemplate().saveOrUpdate(c);
@@ -41,14 +41,6 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 		return this.getHibernateTemplate().get(Courese.class, pid);
 	}
 
-
-	@Override
-	public List<Courese> findAllCouresesByModel(String cname, int type,
-			int start, int end) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public Integer findAllCouresesCountByModel(String cname, int type,
 			int start, int end) {
@@ -63,18 +55,7 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 		});
 	}
 
-	@Override
-	public List<Courese> findHotCoureses() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Integer findAllCouresesCount(Integer userid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Courese> findAllCoureses(Integer userid) {
 		return this.getHibernateTemplate().find("from Courese");
@@ -88,6 +69,7 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 			public Object doInHibernate(Session session) throws HibernateException, SQLException {
 				return session.createCriteria(Courese.class)
 						.add(Restrictions.like("cName", "%"+ condition.getKeyword() + "%"))
+						.addOrder(Order.desc("releaseTime"))
 						.setFirstResult(condition.getFirstResult())
 						.setMaxResults(condition.getMaxResutl()).list();
 			}
@@ -113,6 +95,7 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 		return (List<Courese>)this.getHibernateTemplate().find("from Courese");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Courese> queryAllCourse() {
 		StringBuffer hql = new StringBuffer();

@@ -27,13 +27,10 @@ public interface ICoureseDao {
 	
 	List<Courese> findAllCoureses(Integer userid);
 	
-	Integer findAllCouresesCount(Integer userid);
 	
-	List<Courese> findAllCouresesByModel(String cname, int type, int start, int end);
 	
 	Integer findAllCouresesCountByModel(String cname, int type, int start, int end);
 	
-	List<Courese> findHotCoureses();
 	/**
 	 * 按条件返回
 	 * @param page

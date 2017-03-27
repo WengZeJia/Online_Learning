@@ -10,7 +10,6 @@
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/column.css">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
 </head>
 <body>
 
@@ -52,78 +51,68 @@
 					<tr>
 						<td><a href="javascript:void(0);">${item.user.realName }</a></td>
 						<td class="price">${item.courese.cName }</td>
-						<td class="price">${item.eTime }</td>
-						<td><a href="javascript:void(0);" onclick="" class="reserve">进入学堂</a></td>
+						<td class="price"><fmt:formatDate value="${item.eTime }" pattern="yyyy-MM-dd HH:mm:ss"></fmt:formatDate></td>
+						<td><a href="chat/toChatPage.do?coureseId=${item.courese.coureseId }" class="reserve" target="_blank">进入学堂</a></td>
 					</tr>
 				</c:forEach>
 				<tr>
-	<td colspan="7">
-		<div class="pagelist">
-			<c:choose>
-				<%-- 如果总页数不足10页，那么把所有的页数都显示出来！ --%>
-				<c:when test="${page.totalpage <= page.maxresult }">
-					<c:set var="begin" value="1" />
-					<c:set var="end" value="${page.totalpage }" />
-				</c:when>
-				<c:otherwise>
-					<%-- 当总页数>10时，通过公式计算出begin和end --%>
-					<c:set var="begin" value="${page.currentpage-5 }" />
-					<c:set var="end" value="${page.currentpage+4 }" />
-					<%-- 头溢出 --%>
-					<c:if test="${begin < 1 }">
-						<c:set var="begin" value="1" />
-						<c:set var="end" value="${page.maxresult }" />
-					</c:if>
-					<%-- 尾溢出 --%>
-					<c:if test="${end > page.totalpage }">
-						<c:set var="begin" value="${page.totalpage - 9 }" />
-						<c:set var="end" value="${page.totalpage }" />
-					</c:if>
-				</c:otherwise>
-			</c:choose>
-			<%-- 循环遍历页码列表 --%>
-			<a href="" onclick="jumpTo('${page.currentpage-1}');return false">上一页</a>
-			<c:forEach var="i" begin="${begin }" end="${end }">
-				<c:choose>
-					<c:when test="${i eq page.currentpage }">
-						<span class="current">${i }</span>
-					</c:when>
-					<c:otherwise>
-						<a href="" onclick="jumpTo('${i }');return false">${i }</a>
-					</c:otherwise>
-				</c:choose>
-			</c:forEach>
-			<c:if test="${end < page.totalpage}">....</c:if>
-			<a href="" onclick="jumpTo('${page.currentpage+1}');return false">下一页</a>
-			<a href="" onclick="jumpTo('${page.totalpage}');return false">尾页</a>
-		</div>
-	</td>
-</tr>
-				
+					<td colspan="7">
+						<div class="pagelist">
+							<c:choose>
+								<c:when test="${page.totalpage <= page.maxresult }">
+									<c:set var="begin" value="1" />
+									<c:set var="end" value="${page.totalpage }" />
+								</c:when>
+								<c:otherwise>
+									<c:set var="begin" value="${page.currentpage-5 }" />
+									<c:set var="end" value="${page.currentpage+4 }" />
+									<c:if test="${begin < 1 }">
+										<c:set var="begin" value="1" />
+										<c:set var="end" value="${page.maxresult }" />
+									</c:if>
+									<c:if test="${end > page.totalpage }">
+										<c:set var="begin" value="${page.totalpage - 9 }" />
+										<c:set var="end" value="${page.totalpage }" />
+									</c:if>
+								</c:otherwise>
+							</c:choose>
+							<a href="" onclick="jumpTo('${page.currentpage-1}');return false">上一页</a>
+							<c:forEach var="i" begin="${begin }" end="${end }">
+								<c:choose>
+									<c:when test="${i eq page.currentpage }">
+										<span class="current">${i }</span>
+									</c:when>
+									<c:otherwise>
+										<a href="" onclick="jumpTo('${i }');return false">${i }</a>
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+							<c:if test="${end < page.totalpage}">....</c:if>
+							<a href="" onclick="jumpTo('${page.currentpage+1}');return false">下一页</a>
+							<a href="" onclick="jumpTo('${page.totalpage}');return false">尾页</a>
+						</div>
+					</td>
+				</tr>
 			</table>
 			<input type="hidden" id="totalPage" value="${page.totalpage}">
 			<input class="currentpage" name="currentpage" type="hidden" value="1">
-			<%-- <div class="pageinfo">
-				<ul>
-					<c:choose>
-						<c:when test="${page.currentpage==1}"></c:when>
-						<c:otherwise><li><a href="profile.do?currentpage=1">首页</a></li></c:otherwise>
-					</c:choose>
-					<c:if test="${page.currentpage>2}"><li><a href="profile.do?currentpage=${page.currentpage-1}">上一页</a></li></c:if>
-					<c:if test="${page.currentpage<page.totalpage}"><li><a href="profile.do?currentpage=${page.currentpage+1}">下一页</a></li></c:if>
-							<c:choose>
-						<c:when test="${page.currentpage<page.totalpage}"><li><a href="profile.do?currentpage=${page.totalpage}">末页</a></li></c:when>
-						<c:otherwise></c:otherwise>
-					</c:choose>
-				</ul>
-			</div>	 --%>
-			<div class="form button">
-				
-			</div>
 		</form>
 	</div>
 </div>
-
+<script type="text/javascript">
+function jumpTo(page){
+    if(parseInt(page)<parseInt(1)){
+		alert('已经是第一页！')
+		return false;
+	}
+	var tpn = $("#totalPage").val();
+	if(parseInt(page)>parseInt(tpn)){
+		alert('已经是最后一页！')
+		return false;
+	}
+	window.location.href = "record.do?pageNo="+page;
+}
+</script>
 <footer id="footer">
 	<div class="bottom">Copyright © 在线学习平台| 粤ICP 备120110119 号| 经营许可证：L-YC-BK12345</div>
 </footer>
