@@ -9,6 +9,7 @@ import ol.entity.LeanQueryModel;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.stereotype.Repository;
@@ -68,6 +69,7 @@ public class CoureseDaoImpl extends HibernateSupport implements ICoureseDao {
 			public Object doInHibernate(Session session) throws HibernateException, SQLException {
 				return session.createCriteria(Courese.class)
 						.add(Restrictions.like("cName", "%"+ condition.getKeyword() + "%"))
+						.addOrder(Order.desc("releaseTime"))
 						.setFirstResult(condition.getFirstResult())
 						.setMaxResults(condition.getMaxResutl()).list();
 			}

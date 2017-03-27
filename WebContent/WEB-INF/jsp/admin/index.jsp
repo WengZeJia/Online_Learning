@@ -30,8 +30,8 @@
   <h2><span class="icon-user"></span>系统信息管理</h2>
   <c:if test="${sessionScope.adminRole == 0}">
   <ul style="display: block;">
-    <li><a href="periodMgr.do?step=1" target="right"><span class="icon-caret-right"></span>发布课程</a></li>
-    <li><a href="toAddPeriod.do" target="right"><span class="icon-caret-right"></span>实时课程</a></li>
+    <li><a href="listCourese.do?step=1" target="right"><span class="icon-caret-right"></span>课程列表</a></li>
+    <li><a href="../chat/toChatPage.do" target="right"><span class="icon-caret-right"></span>实时课程</a></li>
   </ul>   
   </c:if>
   <c:if test="${sessionScope.adminRole == 1}">

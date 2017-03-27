@@ -69,9 +69,10 @@
 			<table>
 				<thead>
 					<tr>
+						<th>开讲老师</th>
 						<th>课程</th>
 						<th>开课时间</th>
-						<th>结课时间</th>
+						<!-- <th>结课时间</th> -->
 						<th>科目类型</th>
 						<th>操作</th>
 					</tr>
