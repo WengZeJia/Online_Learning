@@ -37,14 +37,23 @@ public class ChatController {
 	private static String USER_SESSION_KEY = "user";
 	
 	@RequestMapping("toChatPage.do")
-	public ModelAndView toChatPage(HttpServletRequest req, HttpServletResponse resp) {
+	public ModelAndView toChatPage(HttpServletRequest req, Integer coureseId, HttpServletResponse resp) {
 		User user = (User) req.getSession().getAttribute(USER_SESSION_KEY);
 		if(user == null) {
 			System.out.println("用户未登陆");
 			return null;
-		} else {
-			return new ModelAndView("chat/chatPage");
 		}
+		if(coureseId == null || coureseId.intValue() == 0) {
+			System.out.println("传入的课程Id数据不对");
+			return null;
+		}
+		ServletContext application = req.getServletContext();  //获取application
+		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
+		if(cmCenter.getCourseTeacher(coureseId)==null) {
+			System.out.println("找不对对应课堂");
+			return null;
+		}
+		return new ModelAndView("chat/chatPage").addObject("courseId", coureseId);
 	}
 	
 	/**

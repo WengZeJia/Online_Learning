@@ -1,6 +1,8 @@
 ﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <c:set var="context" value="${pageContext.request.contextPath }" />
+<!DOCTYPE>
+<html>
 <link rel="stylesheet" type="text/css" href="${context }/css/chat.css" />
 <script type="text/javascript" src="${context }/js/jquery.js"></script>
 <script type="text/javascript" src="${context }/js/layer.js"></script>
@@ -8,9 +10,12 @@
 <script type="text/javascript">
 window.alert = layer.alert;
 </script>
+<body class="keBody">
+<h1 class="keTitle">在线课堂聊天室</h1>
 <div class="kePublic">
 <input type="hidden" id="userId" value="${sessionScope.user.userId }">
 <input type="hidden" id="userName" value="${sessionScope.user.realName }">
+<input type="hidden" id="courseId" value="${requestScope.courseId }">
 <!--效果html开始-->
 <div class="content">
     <div class="chatBox">
@@ -151,3 +156,5 @@ window.alert = layer.alert;
 </div>
 <!--效果html结束-->
 </div>
+</body>
+</html>

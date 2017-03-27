@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$("#handUp").click(function() {
-		var params = {'courseId':1, 'fromUserId':$('#userId').val()};
+		var params = {'courseId':$("#courseId").val(), 'fromUserId':$('#userId').val()};
 		var stuHandUpLoading = layer.load(2, {shade: [0.8, '#393D49']});
 		$.ajax({
 			cache : false,
@@ -29,7 +29,7 @@ $(document).ready(function() {
 		var now = new Date();
 		var month = now.getMonth() + 1; //月份先加上1
 		var dateTimeStr = now.getFullYear() + "-" + month + "-" + now.getDate() + " " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds();
-		var params = {'courseId':1, 'fromUserId':$('#userId').val(), 'fromUserName': $("#userName").val(), 'content':content, 'dateTime':dateTimeStr};
+		var params = {'courseId':$("#courseId").val(), 'fromUserId':$('#userId').val(), 'fromUserName': $("#userName").val(), 'content':content, 'dateTime':dateTimeStr};
 		$.ajax({
 			cache : false,
 			timeout : 30000, //30s超时
@@ -65,7 +65,7 @@ $(document).ready(function() {
 			cache : false,
 			timeout : 30000, //30s超时
 			url : "getMessage.json",
-			data: {'courseId':1},
+			data: {'courseId':$("#courseId").val()},
 			dataType : "JSON"
 		})
 		.done(function(rs){
@@ -81,7 +81,7 @@ $(document).ready(function() {
 	 * 重新加载用户列表
 	 */
 	function reloadUserListPage() {
-		$("#chatUserPage").load("getCourseUsers.do", {'courseId':1}, function() {});
+		$("#chatUserPage").load("getCourseUsers.do", {'courseId':$("#courseId").val()}, function() {});
 	}
 	
 	/**
@@ -124,7 +124,7 @@ $(document).ready(function() {
 			cache : false,
 			timeout : 30000, //30s超时
 			url : "getStudentHandUpMsg.json",
-			data: {'courseId':1},
+			data: {'courseId':$("#courseId").val()},
 			dataType : "JSON"
 		})
 		.done(function(rs){
@@ -164,7 +164,7 @@ $(document).ready(function() {
 			cache : false,
 			timeout : 30000, //30s超时
 			url : "setCourseStuGagStatus.json",
-			data: {'courseId':1, 'gag':status, 'userId':userId},
+			data: {'courseId':$("#courseId").val(), 'gag':status, 'userId':userId},
 			dataType : "JSON"
 		})
 		.done(function(rs){
@@ -202,7 +202,7 @@ $(document).ready(function() {
 			cache : false,
 			timeout : 30000, //30s超时
 			url : "setCourseStuHandUpStatus.json",
-			data: {'courseId':1, 'noHandUp':status, 'userId':userId},
+			data: {'courseId':$("#courseId").val(), 'noHandUp':status, 'userId':userId},
 			dataType : "JSON"
 		})
 		.done(function(rs){
