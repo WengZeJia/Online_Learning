@@ -31,7 +31,7 @@
   <c:if test="${sessionScope.adminRole == 0}">
   <ul style="display: block;">
     <li><a href="listCourese.do?step=1" target="right"><span class="icon-caret-right"></span>课程列表</a></li>
-    <li><a href="../chat/toChatPage.do" target="right"><span class="icon-caret-right"></span>实时课程</a></li>
+    <li><a href="listCoureseChat.do" target="right"><span class="icon-caret-right"></span>实时课程</a></li>
   </ul>   
   </c:if>
   <c:if test="${sessionScope.adminRole == 1}">

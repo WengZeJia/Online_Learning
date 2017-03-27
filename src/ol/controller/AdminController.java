@@ -5,9 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import ol.bean.ChatMessageCenter;
+import ol.bean.UserBean;
 import ol.dao.IAdminDao;
 import ol.dao.ICoureseDao;
 import ol.dao.IEnrollDao;
@@ -93,6 +96,7 @@ public class AdminController {
 	public ModelAndView logout(HttpSession session){
 		session.removeAttribute("currAdmin");
 		session.removeAttribute("currPeriod");
+		session.removeAttribute("user");
 		session.removeAttribute("adminRole");
 		return new ModelAndView("admin/login");
 	}
@@ -223,8 +227,8 @@ public class AdminController {
 	 */
 	@RequestMapping("saveCourese.do")
 	public ModelAndView saveCourese(HttpServletRequest request,Courese courese, HttpSession session){
+		User user = (User) session.getAttribute("user");
 		try {
-			User user = (User) session.getAttribute("user");
 			if (courese.getCoureseId() == null) {
 				courese.setStatus(0);
 			}
@@ -234,6 +238,11 @@ public class AdminController {
 		} catch (Exception e) {
 			return new ModelAndView("admin/editCourese").addObject("error","提交失败，请联系管理员！");
 		}
+		ServletContext application = request.getServletContext();  //获取application
+		ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
+		cmCenter.addCourse(courese.getCoureseId()); //添加课程
+		cmCenter.addCourseUser(courese.getCoureseId(), new UserBean(user));
+		cmCenter.setUserOnline(user.getUserId());
 		return new ModelAndView("redirect:listCourese.do");
 	}
 	
@@ -268,6 +277,22 @@ public class AdminController {
 		try {
 			Courese cou = coureseDao.findCourese(Integer.parseInt(coureseId));
 			return new ModelAndView("admin/listEnrolls").addObject("enrolls", cou.getEnrolls());
+		} catch (Exception e) {
+			return new ModelAndView("redirect:login.do");
+		}
+	}
+	
+	/**
+	 * 实时课程列表
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("listCoureseChat.do")
+	public ModelAndView listCoureseChat(HttpServletRequest request, HttpSession session){
+		try {
+			User user = (User) session.getAttribute("user");
+			List<Courese> coureses =  coureseDao.findAllCoureses(user.getUserId());
+			return new ModelAndView("admin/listCoureseChat").addObject("coureses", coureses);
 		} catch (Exception e) {
 			return new ModelAndView("redirect:login.do");
 		}

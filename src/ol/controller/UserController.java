@@ -7,9 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import ol.bean.ChatMessageCenter;
+import ol.bean.UserBean;
 import ol.dao.IAdminDao;
 import ol.dao.ICoureseDao;
 import ol.dao.IEnrollDao;
@@ -151,6 +154,11 @@ public class UserController {
 					enrollDao.saveEnroll(el);
 					rs.put("result", "00");
 					rs.put("msg","报名成功！");
+					
+					ServletContext application = request.getServletContext();  //获取application
+					ChatMessageCenter cmCenter =  (ChatMessageCenter) application.getAttribute("chatMessageCenter"); //获取聊天信息数据center
+					cmCenter.addCourseUser(pId, new UserBean(user));
+					cmCenter.setUserOnline(user.getUserId());
 				}else {
 					rs.put("result", "02");
 				}
