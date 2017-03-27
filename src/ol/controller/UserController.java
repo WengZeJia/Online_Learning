@@ -164,5 +164,12 @@ public class UserController {
 			}
 		pw.write(new Gson().toJson(rs));
 	}
-	
+	//报名记录
+		@RequestMapping("scDetail.do")
+		public ModelAndView scDetail(HttpServletRequest request,LeanQueryModel condition){
+				int pid = Integer.parseInt(request.getParameter("coureseId"));
+				Courese c = (Courese) coureseDao.findCourese(pid);
+				return new ModelAndView("scDetail").addObject("c", c);
+						
+		}
 }
