@@ -39,7 +39,7 @@
 <div id="container">
 	<div class="list ticket">
 		<form action="loginForm.do" method="post">
-			<h2>报名课程&nbsp;&nbsp;${msg }</h2>
+			<h2>报名课程&nbsp;&nbsp;</h2>
 			<table>
 				<tr>
 					<th>用户</th>

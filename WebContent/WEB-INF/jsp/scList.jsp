@@ -4,10 +4,9 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <c:forEach items="${page.records }" var="item">
 	<tr>
+		<td><a href="scDetail.do?coureseId=${item.coureseId }" target="_blank">${item.cName }</a></td>
 		<td>${item.user.realName }</td>
-		<td><a href="javascript:void(0);">${item.cName }</a></td>
 		<td class="price">${item.startTime }</td>
-		<%-- <td class="price"><fmt:formatDate value="${item.releaseTime }" pattern="yyyy-MM-dd"></fmt:formatDate></td> --%>
 		<td class="price">${item.type }</td>
 		<td><a href="javascript:void(0);" onclick="enrol('${item.coureseId}')" class="reserve">报名</a></td>
 	</tr>
