@@ -7,16 +7,19 @@
 <script type="text/javascript" src="${context }/js/jquery.js"></script>
 <script type="text/javascript" src="${context }/js/layer.js"></script>
 <script type="text/javascript" src="${context }/js/chat.js"></script>
+<%@ include file="../include/wPaintInclude.jsp"%>
 <script type="text/javascript">
 window.alert = layer.alert;
 </script>
 <body class="keBody">
-<h1 class="keTitle">在线课堂聊天室</h1>
+<h1 class="keTitle">在线课堂</h1>
 <div class="kePublic">
 <input type="hidden" id="userId" value="${sessionScope.user.userId }">
 <input type="hidden" id="userName" value="${sessionScope.user.realName }">
 <input type="hidden" id="courseId" value="${requestScope.courseId }">
 <!--效果html开始-->
+<div id="wPaintBox"></div>
+<div id="showChatLayer" style="margin: 0 auto;cursor: pointer;height: 50px;width:70px;line-height: 50px;text-align: center;color: #FFFFFF;"><img src="${pageContext.request.contextPath }/img/chat_ok.png" style="vertical-align: middle;">课堂交流</div>
 <div class="content">
     <div class="chatBox">
         <div class="chatLeft">
@@ -24,7 +27,7 @@ window.alert = layer.alert;
                 <div class="chat01_title">
                     <ul class="talkTo">
                         <li><a href="javascript:;">${sessionScope.user.realName }</a></li></ul>
-                    <a class="close_btn" href="javascript:;"></a>
+                    	<a class="close_btn" href="javascript:;"></a>
                 </div>
                 <div class="chat01_content">
                     <div class="message_box mes" style="display: block;"></div>
@@ -156,5 +159,6 @@ window.alert = layer.alert;
 </div>
 <!--效果html结束-->
 </div>
+<div class="ds-popup"></div>
 </body>
 </html>

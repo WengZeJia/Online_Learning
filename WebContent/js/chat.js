@@ -1,5 +1,25 @@
 $(document).ready(function() {
-	$("#handUp").click(function() {
+	$(document).on('click', '#showChatLayer', function () {
+		//计算浏览器可视宽高与登陆弹框宽高，使登陆弹框在中间显示
+		var $logInPop = $(".content");
+		var dsPopup = $(".ds-popup");
+		var clientWidth = document.documentElement.clientWidth;
+		var clientHeight = document.documentElement.clientHeight;
+		var loginFrameWidth = $logInPop.width();
+		var loginFrameHeight = $logInPop.height();
+		var left = ( clientWidth - loginFrameWidth ) / 2;
+		var top = ( clientHeight - loginFrameHeight ) / 2;
+		dsPopup.show();
+		$logInPop.css({'left':left,'top':top}).show();
+	})
+
+	//点击遮罩与登陆的关闭按钮
+	$(document).on('click', '.ds-popup,.close_btn', function () {
+		$(".ds-popup").hide();
+		$(".content").hide();
+	});
+	
+	$("#handUp").click(function() { //举手操作
 		var params = {'courseId':$("#courseId").val(), 'fromUserId':$('#userId').val()};
 		var stuHandUpLoading = layer.load(2, {shade: [0.8, '#393D49']});
 		$.ajax({
@@ -18,7 +38,6 @@ $(document).ready(function() {
 			alert("服务器正在休息，请稍后再尝试");
 		});
 	});
-	
 	
 	$(".send_msg").click(function() {
 		var content = $("#textarea").val();
@@ -56,6 +75,12 @@ $(document).ready(function() {
 		reloadUserListPage();
 		getStudentHandUpMsg();
 	}, 1000);
+	
+	reloadWPaintPage(); //不用定时reload页面，因为在页面中
+	
+	function reloadWPaintPage() {
+		$("#wPaintBox").load("../wPaint/toPaintPage.do", {'courseId':$("#courseId").val()});
+	}
 	
 	/**
 	 * 请求后台获取聊天信息
@@ -225,9 +250,7 @@ $(document).ready(function() {
 	
 	}) 
 	
-	$(".close_btn").click(function() {
-		$(".chatBox").hide()
-	}), $(".chat03_content li").mouseover(function() {
+	$(".chat03_content li").mouseover(function() {
 		$(this).addClass("hover").siblings().removeClass("hover")
 	}).mouseout(function() {
 		$(this).removeClass("hover").siblings().removeClass("hover")

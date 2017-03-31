@@ -6,13 +6,23 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 public class ChatMessageCenter {
+	private static String IMAGE_KEY_PREFIX = "COURSEIMAGE";
 	private static String CHAT_KEY_PREFIX = "COURSECHAT";
 	private static String USER_KEY_PREFIX = "COURSEUSER";
 	
+	Map<String, String> courseImageMap = Collections.synchronizedMap(new HashMap<String, String>()); //课程时画
 	Map<String, LinkedList<ChatMessageBean>> chatMsgMap = Collections.synchronizedMap(new HashMap<String, LinkedList<ChatMessageBean>>()); //课程聊天Map
 	Map<String, LinkedList<UserBean>> couseUserMap = Collections.synchronizedMap(new HashMap<String, LinkedList<UserBean>>()); //课程用户Map
 
+	public Map<String, String> getCourseImageMap() {
+		return courseImageMap;
+	}
+	public void setCourseImageMap(Map<String, String> courseImageMap) {
+		this.courseImageMap = courseImageMap;
+	}
 	public Map<String, LinkedList<ChatMessageBean>> getChatMsgMap() {
 		return chatMsgMap;
 	}
@@ -24,6 +34,19 @@ public class ChatMessageCenter {
 	}
 	public void setCouseUserMap(Map<String, LinkedList<UserBean>> couseUserMap) {
 		this.couseUserMap = couseUserMap;
+	}
+	
+	/**
+	 * 获取课程的实时绘画
+	 * @param courseId
+	 * @return
+	 */
+	public String getCourseImage(int courseId) {
+		return this.courseImageMap.get(IMAGE_KEY_PREFIX + courseId);
+	}
+	
+	public void addCourseImage(int courseId, String imageBase64) {
+		this.courseImageMap.put(IMAGE_KEY_PREFIX + courseId, imageBase64);
 	}
 	
 	/**
@@ -66,8 +89,13 @@ public class ChatMessageCenter {
 	 * @param courseId
 	 */
 	public void addCourse(int courseId) {
+		String image = this.getCourseImage(courseId);
 		LinkedList<ChatMessageBean> courseChats = this.getCourseChats(courseId);
 		LinkedList<UserBean> courseUsers = this.getCourseUsers(courseId);
+		if(StringUtils.isBlank(image)) {
+			String imageBase64 = "";
+			this.courseImageMap.put(CHAT_KEY_PREFIX + courseId, imageBase64);
+		}
 		if(courseChats == null) {
 			LinkedList<ChatMessageBean> chatMsgList = new LinkedList<ChatMessageBean>();
 			this.chatMsgMap.put(CHAT_KEY_PREFIX + courseId, chatMsgList);
