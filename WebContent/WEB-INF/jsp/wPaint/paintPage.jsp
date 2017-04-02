@@ -27,6 +27,7 @@ $(document).ready(function() {
 		$('#wPaint').wPaint({
 			path : '${context}/wPaint/',
 			image: '${context}/wPaint/getImage.do',
+			fillStyle: "black",
 			saveImg : saveImg
 		});
 		initPaintImg();
